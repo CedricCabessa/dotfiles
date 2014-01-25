@@ -1,0 +1,8 @@
+shell /bin/bash
+hardstatus alwayslastline 
+defutf8 on
+hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{= kw}%?%-Lw%?%{r}(%{W}%n*%f%t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][%{B} %d/%m %{W}%c %{g}]'
+nethack on
+defscrollback 3000
+shelltitle "$ |bash"
+term screen-256color
