@@ -290,9 +290,21 @@ if [ -n "$SSH_CONNECTION" ] && [ -z "$SCREEN_EXIST" ] && type screen 2>/dev/null
 	exit
 fi
 
-irssinotify() 
+irssinotify()
 {
-	ssh cedc@ced.ryick.net 'tail -f -n1 ~/.irssi/fnotify' | while read heading msg; do msg=$(echo ${msg} | sed 's/>//g' | sed 's/<//g'); notify-send "${heading}" "${msg}"; done
+	if ! ssh-add -l >/dev/null 2>&1; then
+		ssh-add
+	fi
+
+	while true
+	do
+		ssh -o ServerAliveInterval=60 cedc@ced.ryick.net 'tail -f -n0 ~/.irssi/fnotify' |
+		while read heading msg; do
+			msg=$(echo ${msg} | sed 's/>//g' | sed 's/<//g')
+			notify-send "${heading}" "${msg}"
+		done
+		sleep 60
+	done
 }
 
 export USE_CCACHE=1
