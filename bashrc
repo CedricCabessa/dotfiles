@@ -300,7 +300,7 @@ irssinotify()
 	do
 		ssh -o ServerAliveInterval=60 cedc@ced.ryick.net 'tail -f -n0 ~/.irssi/fnotify' |
 		while read heading msg; do
-			msg=$(echo ${msg} | sed 's/>//g' | sed 's/<//g')
+			msg=$(echo ${msg} | sed 's/<\s*\|\s*>//g')
 			notify-send "${heading}" "${msg}"
 		done
 		sleep 60
