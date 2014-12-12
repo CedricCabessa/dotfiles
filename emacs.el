@@ -32,6 +32,7 @@
  '(show-paren-mode t nil (paren))
  ;; where you put your org-mode data
  '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
+ '(org-capture-templates (quote (("n" "notes" entry (file "~/org/notes.org") "* %T"))))
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
@@ -163,6 +164,7 @@
    (imenu-add-to-menubar "TAGS")
    (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\):"
 				  1 font-lock-warning-face t)))
+   (which-function-mode)
 
 )
 
