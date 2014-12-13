@@ -1,0 +1,8 @@
+URxvt*foreground: Green
+!URxvt*background: #424242
+URxvt*background: #4e4e4e
+URxvt*saveLines: 65535
+URxvt*scrollTtyOutput:      false
+URxvt*scrollWithBuffer:     true
+URxvt*scrollTtyKeypress:    true
+URxvt*font: xft:DejaVu Sans Mono:pixelsize=12:antialias=true:hinting=true
