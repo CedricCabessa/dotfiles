@@ -1,0 +1,2 @@
+bind generic P !git format-patch -1 %(commit)
+bind generic , !git rev-list --parents -n1 %(commit)
