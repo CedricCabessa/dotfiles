@@ -184,7 +184,7 @@ alias grep="grep --color"
 export HISTSIZE=50000
 shopt -s histappend
 # home made binary go to ~/fakeroot
-export PATH=/usr/java/latest/bin:~/fakeroot/bin:$PATH
+export PATH=~/fakeroot/bin:~/fakeroot/usr/local/bin:~/fakeroot/usr/bin:$PATH
 export MANPATH=~/fakeroot/share/man:$MANPATH
 export LD_LIBRARY_PATH=~/fakeroot/lib:~/fakeroot/usr/lib:$LD_LIBRARY_PATH
 #sunrise
@@ -229,19 +229,30 @@ droid()
 	PROMPT_COMMAND=prompt
 }
 
+notify()
+{
+	local me="ced"
+	local token="xxxx"
+	local title=$1
+	shift
+
+	notify-send $title "$*"
+	#curl -s --data "*${title}*:$*" "https://genymobile.slack.com/services/hooks/slackbot?token=$token&channel=%40$me" > /dev/null
+}
+
 M()
 {
 	local cpus=$(grep ^processor /proc/cpuinfo | wc -l)
-	local makecmd="make -j $(( $cpus * 6/4 )) $*"
+	local args="-j$(( $cpus * 3/2 )) $@"
 
 	if type colormake > /dev/null 2>&1; then
-		if eval $makecmd  2>&1; then
-			notify-send [$PWD] succeed
+		if colormake $args; then
+			notify [$(prompt_pwd)] compilation succeed
 		else
-			notify-send [$PWD] failed
-		fi | colormake
+			notify [$(prompt_pwd)] compilation failed
+		fi
 	else
-		eval $makecmd
+		make $args
 	fi
 }
 
@@ -301,7 +312,7 @@ irssinotify()
 		ssh -o ServerAliveInterval=60 cedc@ced.ryick.net 'tail -f -n0 ~/.irssi/fnotify' |
 		while read heading msg; do
 			msg=$(echo "${msg}" | sed 's/<\s*\|\s*>//g')
-			notify-send "${heading}" "${msg}"
+			notify "${heading}" "${msg}"
 		done
 		sleep 60
 	done
