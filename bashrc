@@ -184,9 +184,9 @@ alias grep="grep --color"
 export HISTSIZE=50000
 shopt -s histappend
 # home made binary go to ~/fakeroot
-export PATH=~/fakeroot/bin:~/fakeroot/usr/local/bin:~/fakeroot/usr/bin:$PATH
-export MANPATH=~/fakeroot/share/man:$MANPATH
-export LD_LIBRARY_PATH=~/fakeroot/lib:~/fakeroot/usr/lib:$LD_LIBRARY_PATH
+export PATH=~/fakeroot/bin:~/fakeroot/usr/local/bin:~/fakeroot/usr/bin${PATH:+:$PATH}
+export MANPATH=~/fakeroot/share/man${MANPATH:+:$MANPATH}
+export LD_LIBRARY_PATH=~/fakeroot/lib:~/fakeroot/usr/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 #sunrise
 export ECHANGELOG_USER="Cédric Cabessa (ced_c) <ced@ryick.net>"
 # what are my process ?
