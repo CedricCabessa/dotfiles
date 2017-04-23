@@ -1,0 +1,33 @@
+[user]
+	name = Cédric Cabessa
+	email = ced@ryick.net
+#[http]
+#	proxy = localhost:3128
+[color]
+	ui = auto
+[sendemail]
+        smtpencryption = tls
+        smtpserver = ced.ryick.net
+        smtpuser = xxx
+        smtpserverport = 25
+[help]
+	autocorrect = 20
+[alias]
+	subup = submodule update --init --recursive
+        propre = clean -xfd
+[status]
+	submoduleSummary = true
+[rebase]
+	autostash = true
+[stash]
+	showPatch = true
+[pager]
+	log = diff-highlight | less
+	show = diff-highlight | less
+	diff = diff-highlight | less
+[push]
+	default = simple
+[commit]
+	verbose = true
+[diff]
+	indentHeuristic = true
