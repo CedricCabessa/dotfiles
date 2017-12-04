@@ -7,16 +7,21 @@
 ;;                is like a Jedi building his own lightsaber
 
 
+
+;; Added by Package.el.  This must come before configurations of
+;; installed packages.  Don't delete this line.  If you don't want it,
+;; just comment it out by adding a semicolon to the start of the line.
+;; You may delete these explanatory comments.
+(package-initialize)
+(add-to-list 'package-archives '("melpa" . "http://melpa-stable.milkbox.net/packages/"))
+
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(blink-cursor-mode nil)
- '(c-basic-offset 8)
- '(py-indent-offset 4)
- '(sh-indentation 8)
- '(sh-basic-offset 8)
+ '(c-basic-offset 4)
  '(c-default-style (quote ((java-mode . "java") (other . "k&r"))))
  ;; case insensitive search
  '(case-fold-search t)
@@ -36,9 +41,8 @@
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
- '(notmuch-fcc-dirs "INBOX")
- '(safe-local-variable-values (quote ((encoding . utf-8)))))
-(setq-default indent-tabs-mode t)
+ '(package-selected-packages (quote (go-mode rust-mode)))
+ '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
 
