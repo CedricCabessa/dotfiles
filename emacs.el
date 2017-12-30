@@ -41,10 +41,16 @@
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
- '(package-selected-packages (quote (go-mode rust-mode)))
+ '(package-selected-packages
+   (quote
+    (markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
+;; exec-path-from-shell bug due to "cannot set terminal process group (-1): Inappropriate ioctl for device"
+;; setting the path here doesn't seem to works, so you need to symlink from
+;; .local/bin
+;;(exec-path-from-shell-initialize)
 
 ;;;;;;;;;;
 ;; VIEW ;;
@@ -169,7 +175,9 @@
    (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\):"
 				  1 font-lock-warning-face t)))
    (which-function-mode)
-
+   (yas-minor-mode)
+   (auto-complete-mode)
+   (elpy-enable)
 )
 
 (defun my-tex()
@@ -190,6 +198,11 @@
 	(flyspell-mode)
 )
 
+(ac-config-default)
+(require 'auto-complete-config)
+(require 'go-autocomplete)
+
+(add-hook 'go-mode-hook 'my-code)
 (add-hook 'php-mode-hook 'my-code)
 (add-hook 'c++-mode-hook 'my-code)
 (add-hook 'c-mode-common-hook 'my-code)
@@ -197,6 +210,12 @@
 (add-hook 'python-mode-hook 'my-code)
 (add-hook 'tex-mode-hook 'my-tex)
 (add-hook 'message-mode-hook 'my-mail)
+
+;; For elpy
+(setq elpy-rpc-python-command "python3")
+;; For interactive shell
+(setq python-shell-interpreter "python3")
+;; make sure needed package are installed: M-x elpy-config RET
 
 
 ;;;;;;;;;;;;
