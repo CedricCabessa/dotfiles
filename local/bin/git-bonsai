@@ -1,0 +1,20 @@
+#!/bin/bash
+
+remote_prune() {
+        for remote in $(git remote)
+        do
+                git remote prune $1 $remote
+        done
+}
+
+if [[ $1 == "-n" ]];
+then
+        remote_prune -n
+        git branch --merged master | grep -v master
+else
+        remote_prune
+        branches=$(git branch --merged master | grep -v master)
+        if [[ -n ${branches} ]]; then
+                git branch -d ${branches}
+        fi
+fi
