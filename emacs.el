@@ -200,6 +200,8 @@
 
 (ac-config-default)
 (require 'auto-complete-config)
+;; go get github.com/rogpeppe/godef
+;; go get github.com/nsf/gocode
 (require 'go-autocomplete)
 
 (add-hook 'go-mode-hook 'my-code)
