@@ -35,6 +35,8 @@
  '(global-font-lock-mode t nil (font-lock))
  ;; match parentheses
  '(show-paren-mode t nil (paren))
+ ;; ident with space
+ '(indent-tabs-mode nil)
  ;; where you put your org-mode data
  '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
  '(org-capture-templates (quote (("n" "notes" entry (file "~/org/notes.org") "* %T"))))
