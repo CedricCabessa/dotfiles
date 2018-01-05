@@ -54,6 +54,9 @@
 ;; .local/bin
 ;;(exec-path-from-shell-initialize)
 
+(setenv "SSH_AUTH_SOCK"
+ (concat "/run/user/" (number-to-string (user-uid)) "/ssh-agent.socket"))
+
 ;;;;;;;;;;
 ;; VIEW ;;
 ;;;;;;;;;;
