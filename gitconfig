@@ -15,6 +15,8 @@
 [alias]
 	subup = submodule update --init --recursive
         propre = clean -xfd
+        which = !git branch -a | grep -i
+        lucky = "!f() { branch=$(git branch | grep -i -m1 $1) && git checkout $(git branch | grep -i -m1 $1) ; }; f"
 [status]
 	submoduleSummary = true
 [rebase]
@@ -25,8 +27,6 @@
 	log = diff-highlight | less
 	show = diff-highlight | less
 	diff = diff-highlight | less
-[push]
-	default = simple
 [commit]
 	verbose = true
 [diff]
