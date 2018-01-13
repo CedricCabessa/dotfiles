@@ -31,6 +31,7 @@
  '(eshell-save-history-on-exit t)
  ;; control line wrapping
  '(fill-column 80)
+ '(fci-rule-color "gray14")
  ;; syntax highlight on
  '(global-font-lock-mode t nil (font-lock))
  ;; match parentheses
@@ -45,7 +46,7 @@
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
-    (markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -69,8 +70,9 @@
 ;; who need a tool bar ?
 (if (display-graphic-p) (tool-bar-mode 0))
 ;; show column number
+(require 'fill-column-indicator)
+(fci-mode)
 (setq column-number-mode t)
-(require 'column-marker)
 ;; two windows
 (if (display-graphic-p) (split-window-vertically 20))
 
@@ -169,7 +171,6 @@
 
 
 (defun my-code ()
-  (column-marker-3 80)
 ;;  (flyspell-prog-mode)
    (global-ede-mode t)
 ;;   (require 'semantic-ia)
@@ -188,7 +189,6 @@
 (defun my-tex()
 	(ispell-change-dictionary "francais")
 	(flyspell-mode)
-	(setq fill-column 80)
 	(auto-fill-mode)
 	(global-set-key [f6] 'fill-region)
 ;;	(require 'kdvi-search)
