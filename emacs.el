@@ -166,36 +166,17 @@
 
 
 (defun my-code ()
-;;  (flyspell-prog-mode)
-   (global-ede-mode t)
-;;   (require 'semantic-ia)
-;;   (require 'semantic-gcc)
-   (ede-minor-mode)
-;;   (semantic-load-enable-excessive-code-helpers)
-   (imenu-add-to-menubar "TAGS")
-   (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\):"
-				  1 font-lock-warning-face t)))
-   (which-function-mode)
-   (yas-minor-mode)
-   (auto-complete-mode)
-   (elpy-enable)
+  (flyspell-prog-mode)
+  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\):"
+                                 1 font-lock-warning-face t)))
+  (which-function-mode)
+  (yas-minor-mode)
+  (auto-complete-mode)
+  (elpy-enable)
 )
 
-(defun my-tex()
-	(ispell-change-dictionary "francais")
-	(flyspell-mode)
-	(auto-fill-mode)
-	(global-set-key [f6] 'fill-region)
-;;	(require 'kdvi-search)
-;;	(global-set-key "\C-x\C-j" 'kdvi-jump-to-line)
-;;	(require 'verbiste)
-;;	(verbiste-enable-key-bindings t nil (verbiste))
-;;	(verbiste-buffer-coding-system (quote utf-8))
-)
-
-(defun my-mail()
-	(ispell-change-dictionary "francais")
-	(flyspell-mode)
+(defun my-text()
+  (flyspell-mode)
 )
 
 (ac-config-default)
@@ -204,21 +185,14 @@
 ;; go get github.com/nsf/gocode
 (require 'go-autocomplete)
 
-(add-hook 'go-mode-hook 'my-code)
-(add-hook 'php-mode-hook 'my-code)
-(add-hook 'c++-mode-hook 'my-code)
-(add-hook 'c-mode-common-hook 'my-code)
-(add-hook 'perl-mode-hook 'my-code)
-(add-hook 'python-mode-hook 'my-code)
-(add-hook 'tex-mode-hook 'my-tex)
-(add-hook 'message-mode-hook 'my-mail)
-
 ;; For elpy
 (setq elpy-rpc-python-command "python3")
 ;; For interactive shell
 (setq python-shell-interpreter "python3")
 ;; make sure needed package are installed: M-x elpy-config RET
 
+(add-hook 'prog-mode-hook 'my-code)
+(add-hook 'text-mode-hook 'my-text)
 
 ;;;;;;;;;;;;
 ;; NOTMUCH;;
