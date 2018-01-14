@@ -41,7 +41,7 @@
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
-    (fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -190,6 +190,8 @@
 ;; For interactive shell
 (setq python-shell-interpreter "python3")
 ;; make sure needed package are installed: M-x elpy-config RET
+
+(global-magit-file-mode)
 
 (add-hook 'prog-mode-hook 'my-code)
 (add-hook 'text-mode-hook 'my-text)
