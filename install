@@ -1,0 +1,38 @@
+#!/bin/bash -ex
+
+DOTFILES_DIR=$(dirname $(realpath $0))
+
+curl_install() {
+    local url=$1
+    local filepath=~/.local/bin/$(basename $url)
+    curl -so ${filepath} ${url}
+    chmod +x ${filepath}
+}
+
+copy_install() {
+    ln -sf ${DOTFILES_DIR}/${1} ~/.${1}
+}
+
+mkdir -p ~/.local/bin
+mkdir -p ~/.config
+
+pip3 install -U --user diff-highlight
+
+curl_install https://raw.githubusercontent.com/paulirish/git-open/master/git-open
+curl_install http://www.home.unix-ag.org/simon/woof
+
+copy_install bashrc
+copy_install dircolors
+copy_install emacs.el
+copy_install gitconfig
+copy_install i3status.conf
+copy_install screenrc
+copy_install tigrc
+copy_install vimrc
+copy_install Xdefaults
+copy_install irssi
+copy_install config/dunst
+copy_install config/sway
+copy_install local/bin/git-bonsai
+copy_install local/bin/markdown
+copy_install local/bin/ssh
