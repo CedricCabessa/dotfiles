@@ -23,24 +23,19 @@
  '(blink-cursor-mode nil)
  '(c-basic-offset 4)
  '(c-default-style (quote ((java-mode . "java") (other . "k&r"))))
- ;; case insensitive search
  '(case-fold-search t)
- ;; compilation (@see <F5>) buffer scroll automatically
  '(compilation-scroll-output t)
- ;; eshell save
  '(eshell-save-history-on-exit t)
- ;; control line wrapping
- '(fill-column 80)
  '(fci-rule-color "gray14")
- ;; syntax highlight on
+ '(fill-column 80)
  '(global-font-lock-mode t nil (font-lock))
- ;; match parentheses
- '(show-paren-mode t nil (paren))
- ;; ident with space
  '(indent-tabs-mode nil)
- ;; where you put your org-mode data
  '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
- '(org-capture-templates (quote (("n" "notes" entry (file "~/org/notes.org") "* %T"))))
+ '(org-capture-templates
+   (quote
+    (("n" "notes" entry
+      (file "~/org/notes.org")
+      "* %T"))))
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
