@@ -57,9 +57,6 @@
 ;; VIEW ;;
 ;;;;;;;;;;
 
-;; the Matrix style
-(set-face-background 'default "black")
-(set-face-foreground 'default "green")
 ;; do not blink
 (blink-cursor-mode -1)
 ;; who need a tool bar ?
@@ -212,6 +209,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "dark sea green" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 113 :width normal :foundry "PfEd" :family "DejaVu Sans Mono"))))
  '(cursor ((t (:background "green"))))
  '(font-lock-warning-face ((t (:background "orange" :foreground "black" :weight bold))))
  '(trailing-whitespace ((((class color) (background dark)) (:background "blue")))))
