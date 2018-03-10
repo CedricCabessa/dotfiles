@@ -17,6 +17,7 @@
         propre = clean -xfd
         which = !git branch -a | grep -i
         lucky = "!f() { branch=$(git branch | grep -i -m1 $1) && git checkout $(git branch | grep -i -m1 $1) ; }; f"
+        bourre = push --force-with-lease
 [status]
 	submoduleSummary = true
 [rebase]
