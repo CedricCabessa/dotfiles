@@ -65,7 +65,8 @@
 (if (display-graphic-p) (tool-bar-mode 0))
 ;; show column number
 (require 'fill-column-indicator)
-(fci-mode)
+(define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+(global-fci-mode 1)
 (setq column-number-mode t)
 ;; two windows
 (if (display-graphic-p) (split-window-vertically 20))
@@ -166,7 +167,7 @@
 
 (defun my-code ()
   (flyspell-prog-mode)
-  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\):"
+  (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|XXX\\):"
                                  1 font-lock-warning-face t)))
   (which-function-mode)
   (yas-minor-mode)
@@ -176,6 +177,7 @@
 
 (defun my-text()
   (flyspell-mode)
+  (auto-fill-mode)
 )
 
 (ac-config-default)
