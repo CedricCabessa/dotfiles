@@ -36,36 +36,6 @@ prompt_pwd()
 
 
 ##
-# return sys info: load average (5min), mem available, swap used, svn and git
-# branch for the current folder.
-##
-prompt_info()
-{
-	local load5=$(awk '{print $2}' /proc/loadavg)
-	local memf=$(($(grep ^MemFree /proc/meminfo |awk '{print $2}')/1024))
-	local swaptotal=$(($(grep ^SwapTotal /proc/meminfo |awk '{print $2}')/1024))
-	local swapfree=$(($(grep ^SwapFree /proc/meminfo |awk '{print $2}')/1024))
-	local swap=$(($swaptotal - $swapfree))
-
-	local svnmsg=""
-	if [[ -d .svn ]]
-	then
-		local branch=$(LANG=C svn info 2>/dev/null | grep ^URL: | grep  /branches/ | sed 's%.*/branches/\([[:alnum:]_\-\.]*\)\(/.*\)\{0,1\}%\1%g')
-		branch=${branch:-"trunk"}
-		svnmsg="svn:$branch"
-	fi
-
-	local gitmsg=$(git branch --no-color 2> /dev/null | grep ^\* | awk '{print $2}')
-	if [[ "_$gitmsg" != "_" ]]
-	then
-		gitmsg="git:$gitmsg"
-	fi
-
-	echo -e "l5:$load5     mem:$memf     swap:$swap     $svnmsg$gitmsg"
-}
-
-
-##
 # @see PROMPT_COMMAND
 # @see PROMPT_COMMAND_PREFIX
 ##
@@ -86,7 +56,6 @@ prompt()
 
 	if [[ $error != 0 ]]; then
 		if [[ $UID != 0 ]]; then
-			#PS1="\[\e[s\]\[\e[1;1f\]\[\e[44m\]\[\e[01;37m\]\[$(prompt_info)\]\[\e[K\]\[\e[u\]\[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 			PS1="${error} ${prefix}\[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 		else
 			PS1="${error} ${prefix}\[\e[41;36m\]\h \[\e[37;41m\]\w # \[\e[0m\]"
@@ -97,7 +66,6 @@ prompt()
 			#\[\e[u\] restor cursor
 			#\[\e[1;\$((COLUMNS-4))f\] write at row 1 col max-4
 			#\[\e[K\] clear to endofline
-			#PS1="\[\e[s\]\[\e[1;1f\]\[\e[44m\]\[\e[01;37m\]\[$(prompt_info)\]\[\e[K\]\[\e[u\]\[\e[01;36m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 			PS1="${prefix}\[\e[01;36m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 		else
 			#not too much fancy stuff for root
@@ -105,8 +73,6 @@ prompt()
 		fi
 	fi
 }
-#do not write on the status line (first line)
-#echo ""
 
 case $TERM in
 	xterm*|rxvt*|Eterm|screen*|linux)
@@ -205,27 +171,6 @@ svnlog()
 svndiff()
 {
 	svn diff $@ | less
-}
-
-droid()
-{
-	if [[ -f build/envsetup.sh ]]; then
-		. build/envsetup.sh
-	else
-		echo "little lost robot :-(" >&2
-		return 1
-	fi
-	export USE_CCACHE=1
-	if compgen -A function | grep brunch; then
-		# cyanogenmod
-		brunch $@
-	else
-		# aosp
-		lunch $@
-	fi
-	# android prompt is borked
-	PROMPT_COMMAND_PREFIX="${TARGET_PRODUCT}-${TARGET_BUILD_VARIANT} "
-	PROMPT_COMMAND=prompt
 }
 
 notify()
