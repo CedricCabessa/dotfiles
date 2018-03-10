@@ -10,6 +10,10 @@ if [[ $- != *i* || $TERM == "dumb" ]] ; then
 	return
 fi
 
+# Source global definitions
+if [ -f /etc/bashrc ]; then
+        . /etc/bashrc
+fi
 
 ##
 # if pwd (\w) is too long, replace first characters by $trunc_symbol
@@ -76,7 +80,7 @@ prompt()
 
 case $TERM in
 	xterm*|rxvt*|Eterm|screen*|linux)
-		PROMPT_COMMAND=prompt
+		PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }prompt"
 		;;
 	*)
 		PS1='\h:\w '
