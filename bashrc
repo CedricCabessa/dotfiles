@@ -80,7 +80,7 @@ prompt()
 
 case $TERM in
 	xterm*|rxvt*|Eterm|screen*|linux)
-		PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }prompt"
+		PROMPT_COMMAND="prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
 		;;
 	*)
 		PS1='\h:\w '
