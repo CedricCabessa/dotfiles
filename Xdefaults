@@ -1,4 +1,4 @@
-URxvt*foreground: Green
+URxvt*foreground: light green
 !URxvt*background: #4e4e4e
 URxvt*background: #303030
 URxvt*saveLines: 65535
