@@ -43,7 +43,7 @@
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
-    (magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
