@@ -141,10 +141,10 @@
 
     # redisplay last message(s)
     # On the US keyboard layout 'grave' is normally above TAB and left of '1'.
-    history = ctrl+1
+    history = ctrl+&
 
     # context menu
-    context = ctrl+shift+period
+    context = ctrl+shift+,
 
 [urgency_low]
     # IMPORTANT: colors have to be defined in quotation marks.
