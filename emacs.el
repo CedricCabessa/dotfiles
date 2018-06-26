@@ -125,6 +125,11 @@
    (perl . t)
    ))
 
+(setq org-capture-templates
+(quote
+(("j" "Journal" entry (file+datetree "~/org/work/journal.org")
+  "* %?\n%U\n"))))
+
 ;;;;;;;;;;;;;;
 ;; SHORTCUTS;;
 ;;;;;;;;;;;;;;
