@@ -41,28 +41,20 @@ prompt_pwd()
 
 ##
 # @see PROMPT_COMMAND
-# @see PROMPT_COMMAND_PREFIX
 ##
 prompt()
 {
 	#save $? before it is overrided
 	local error=$?
 
-	#write history
-	history -a
-	#reload history
-	history -n
-	local prefix="${SCHROOT_CHROOT_NAME}"
-	if [[ -n ${prefix} ]]; then
-		prefix="${prefix}-"
-	fi
-	prefix="${prefix}${PROMPT_COMMAND_PREFIX}"
+        # https://unix.stackexchange.com/a/18443
+        history -n; history -w; history -c; history -r;
 
 	if [[ $error != 0 ]]; then
 		if [[ $UID != 0 ]]; then
-			PS1="${error} ${prefix}\[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
+			PS1="${error} \[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 		else
-			PS1="${error} ${prefix}\[\e[41;36m\]\h \[\e[37;41m\]\w # \[\e[0m\]"
+			PS1="${error} \[\e[41;36m\]\h \[\e[37;41m\]\w # \[\e[0m\]"
 		fi
 	else
 		if [[ $UID != 0 ]]; then
@@ -151,9 +143,10 @@ alias tiga="tig --all"
 export GREP_COLOR="01;31"
 alias grep="grep --color"
 # history
-export HISTSIZE=50000
+export HISTSIZE=-1
+export HISTCONTROL=erasedups:ignorespace
 shopt -s histappend
-export PATH=~/go/bin${PATH:+:$PATH}
+export PATH=~/.local/bin:~/go/bin${PATH:+:$PATH}
 export MANPATH=~/.local/man${MANPATH:+:$MANPATH}:
 export LD_LIBRARY_PATH=~/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 #sunrise
@@ -242,10 +235,10 @@ fi
 
 export VISUAL=$EDITOR
 
-# resume (or create) a screen session if I come by SSH.
-if [ -n "$SSH_CONNECTION" ] && [ -z "$SCREEN_EXIST" ] && type screen 2>/dev/null; then
-	export SCREEN_EXIST=1
-	screen -RD
+# resume (or create) a tmux session if I come by SSH.
+if [ -n "$SSH_CONNECTION" ] && [ -z "$TMUX_EXIST" ] && type tmux >/dev/null 2>&1; then
+	export TMUX_EXIST=1
+	tmux attach -d || tmux
 	exit
 fi
 
@@ -269,3 +262,11 @@ irssinotify()
 export USE_CCACHE=1
 export CCACHE_DIR=~/.ccache
 export TERMINAL="rxvt256c -bg black -fg green -sl 20000 -fn 'xft:DejaVuSansMono:pixelsize=12'"
+
+dkr() {
+    docker exec -i -t $1 /bin/bash
+}
+
+if [[ -f /usr/share/fzf/shell/key-bindings.bash ]]; then
+   . /usr/share/fzf/shell/key-bindings.bash
+fi
