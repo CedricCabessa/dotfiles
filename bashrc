@@ -42,19 +42,23 @@ prompt_pwd()
 ##
 # @see PROMPT_COMMAND
 ##
-prompt()
+bashrcprompt()
 {
     #save $? before it is overrided
     local error=$?
+    local venv=""
+    if [[ -n ${VIRTUAL_ENV} ]]; then
+        venv="(venv) "
+    fi
 
     # https://unix.stackexchange.com/a/18443
     history -n; history -w; history -c; history -r;
 
     if [[ $error != 0 ]]; then
 	if [[ $UID != 0 ]]; then
-	    PS1="${error} \[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
+	    PS1="${error} ${venv}\[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 	else
-	    PS1="${error} \[\e[41;36m\]\h \[\e[37;41m\]\w # \[\e[0m\]"
+	    PS1="${error} ${venv}\[\e[41;36m\]\h \[\e[37;41m\]\w # \[\e[0m\]"
 	fi
     else
 	if [[ $UID != 0 ]]; then
@@ -62,7 +66,7 @@ prompt()
 	    #\[\e[u\] restor cursor
 	    #\[\e[1;\$((COLUMNS-4))f\] write at row 1 col max-4
 	    #\[\e[K\] clear to endofline
-	    PS1="${prefix}\[\e[01;36m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
+	    PS1="${venv}\[\e[01;36m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
 	else
 	    #not too much fancy stuff for root
 	    PS1="\[\e[01;31m\]\h \[\e[37;1m\]\w # \[\e[0m\]"
@@ -72,7 +76,9 @@ prompt()
 
 case $TERM in
     xterm*|rxvt*|Eterm|screen*|linux)
-	PROMPT_COMMAND="prompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+        if ! echo $PROMPT_COMMAND | grep "bashrcprompt" > /dev/null 2>&1; then
+	    PROMPT_COMMAND="bashrcprompt${PROMPT_COMMAND:+;$PROMPT_COMMAND}"
+        fi
 	;;
     *)
 	PS1='\h:\w '
