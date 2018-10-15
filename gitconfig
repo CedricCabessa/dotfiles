@@ -14,11 +14,12 @@
 	autocorrect = 20
 [alias]
 	subup = submodule update --init --recursive
-        propre = clean -xfd
+        propre = "!f() { git clean -xfd || sudo git clean -xfd; }; f"
         which = !git branch -a | grep -i
         lucky = "!f() { branch=$(git branch | grep -i -m1 $1) && git checkout $(git branch | grep -i -m1 $1) ; }; f"
         wdiff = diff --word-diff=color
         bourre = push --force-with-lease
+        stashi = stash --keep-index
 [status]
 	submoduleSummary = true
 [rebase]
