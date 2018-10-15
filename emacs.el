@@ -161,6 +161,11 @@
 	(yank-pop -1)
 )
 
+(defun insert-date ()
+  (interactive)
+  (insert (format-time-string "%Y-%m-%d"))
+)
+
 ;;;;;;;;;;;;
 ;; CODE   ;;
 ;;;;;;;;;;;;
