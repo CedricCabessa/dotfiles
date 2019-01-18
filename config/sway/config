@@ -20,8 +20,8 @@ set $menu dmenu_run
 
 ### Output configuration
 #
-# Default wallpaper (more resolutions are available in /usr/share/sway/)
-output * bg /usr/share/backgrounds/default.png fill
+# Default wallpaper (more resolutions are available in /usr/share/backgrounds/sway/)
+output * bg /usr/share/backgrounds/f29/default/normalish/f29.png fill
 #
 # Example configuration:
 #
