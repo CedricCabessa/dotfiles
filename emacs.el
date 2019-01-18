@@ -32,18 +32,30 @@
  '(flyspell-default-dictionary "english")
  '(global-font-lock-mode t nil (font-lock))
  '(indent-tabs-mode nil)
+ '(notmuch-saved-searches
+   (quote
+    ((:name "inbox" :query "tag:inbox" :key "i")
+     (:name "unread" :query "tag:unread" :key "u")
+     (:name "flagged" :query "tag:flagged" :key "f")
+     (:name "sent" :query "tag:sent" :key "t")
+     (:name "drafts" :query "tag:draft" :key "d")
+     (:name "all mail" :query "*" :key "a")
+     (:name "tracking" :query "thread:{tag:tracking} and thread:{tag:unread}")
+     (:name "sentry" :query "tag:sentry and tag:unread"))))
  '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
  '(org-capture-templates
    (quote
     (("n" "notes" entry
       (file "~/org/notes.org")
-      "* %T"))))
+      "* %T"))) t)
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
-    (yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+ '(racer-rust-src-path
+   "/home/ccabessa/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -111,20 +123,6 @@
 ;; first day of week is monday
 (setq calendar-week-start-day 1)
 
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '(
-   (sh . t)
-   (python . t)
-   (R . t)
-   (ruby . t)
-   (ditaa . t)
-   (dot . t)
-   (octave . t)
-   (sqlite . t)
-   (perl . t)
-   ))
-
 (setq org-capture-templates
 (quote
 (("j" "Journal" entry (file+datetree "~/org/work/journal.org")
@@ -190,6 +188,11 @@
   (auto-fill-mode)
 )
 
+(defun my-rust()
+  (racer-mode 1)
+  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+)
+
 (ac-config-default)
 (require 'auto-complete-config)
 ;; go get github.com/rogpeppe/godef
@@ -206,12 +209,19 @@
 
 (add-hook 'prog-mode-hook 'my-code)
 (add-hook 'text-mode-hook 'my-text)
+(add-hook 'rust-mode-hook 'my-rust)
+(add-hook 'racer-mode-hook #'eldoc-mode)
+(add-hook 'racer-mode-hook #'company-mode)
+
+
+(setq company-tooltip-align-annotations t)
 
 ;;;;;;;;;;;;
 ;; NOTMUCH;;
 ;;;;;;;;;;;;
 
 ;; notmuch conf is split in another file
+(load-file "/usr/share/emacs/site-lisp/notmuch.elc")
 (if (file-exists-p "~/.notmuch.el") (load-file (expand-file-name "~/.notmuch.el")))
 (setq user-mail-address "ced@ryick.net")
 ;; close sent message frame after sending
