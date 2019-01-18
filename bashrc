@@ -152,7 +152,7 @@ alias grep="grep --color"
 export HISTSIZE=-1
 export HISTCONTROL=erasedups:ignorespace
 shopt -s histappend
-export PATH=~/.local/bin:~/go/bin${PATH:+:$PATH}
+export PATH=$HOME/.local/bin:$HOME/bin:~/go/bin${PATH:+:$PATH}
 export MANPATH=~/.local/man${MANPATH:+:$MANPATH}:
 export LD_LIBRARY_PATH=~/.local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 #sunrise
