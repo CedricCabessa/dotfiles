@@ -30,6 +30,7 @@
  '(fci-rule-column 80)
  '(fill-column 80)
  '(flyspell-default-dictionary "english")
+ '(git-link-open-in-browser t)
  '(global-font-lock-mode t nil (font-lock))
  '(indent-tabs-mode nil)
  '(notmuch-saved-searches
@@ -53,7 +54,7 @@
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
-    (racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(racer-rust-src-path
    "/home/ccabessa/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/src")
  '(show-paren-mode t nil (paren)))
