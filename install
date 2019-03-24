@@ -36,3 +36,5 @@ copy_install config/sway
 copy_install local/bin/git-bonsai
 copy_install local/bin/markdown
 copy_install local/bin/ssh
+
+sudo dnf install emacs tig autojump fzf
