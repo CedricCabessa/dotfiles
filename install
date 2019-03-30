@@ -21,6 +21,7 @@ pip3 install -U --user diff-highlight
 curl_install https://raw.githubusercontent.com/paulirish/git-open/master/git-open
 curl_install http://www.home.unix-ag.org/simon/woof
 
+copy_install profile
 copy_install bashrc
 copy_install dircolors
 copy_install emacs.el
