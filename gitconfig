@@ -14,7 +14,7 @@
 	autocorrect = 20
 [alias]
 	subup = submodule update --init --recursive
-        propre = "!f() { git clean -xfd || sudo git clean -xfd; }; f"
+        propre = "!f() { git clean -Xfd || sudo git clean -Xfd; }; f"
         which = !git branch -a | grep -i
         lucky = "!f() { branch=$(git branch | grep -i -m1 $1) && git checkout $(git branch | grep -i -m1 $1) ; }; f"
         wdiff = diff --word-diff=color
