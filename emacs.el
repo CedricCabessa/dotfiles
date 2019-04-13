@@ -133,8 +133,6 @@
 
 ;; compile
 (global-set-key [f5] 'compile)
-;; goto line
-(global-set-key "\C-g" 'goto-line)
 ;; goto matching parenthese
 (global-set-key "%" 'match-paren)
 ;; move in kill ring in reverse
