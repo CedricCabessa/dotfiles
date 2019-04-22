@@ -38,4 +38,4 @@ copy_install local/bin/git-bonsai
 copy_install local/bin/markdown
 copy_install local/bin/ssh
 
-sudo dnf install emacs tig autojump fzf
+sudo dnf install emacs tig autojump fzf git git-email

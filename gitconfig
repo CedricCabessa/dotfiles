@@ -6,10 +6,12 @@
 [color]
 	ui = auto
 [sendemail]
-        smtpencryption = tls
-        smtpserver = ced.ryick.net
-        smtpuser = xxx
-        smtpserverport = 25
+	smtpserver = smtp.gmail.com
+	smtpuser = cedric.cabessa@gmail.com
+	smtpencryption = tls
+	smtpserverport = 587
+	#smtpPass = xxx
+	confirm = auto
 [help]
 	autocorrect = 20
 [alias]
