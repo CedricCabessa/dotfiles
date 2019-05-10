@@ -33,3 +33,5 @@
 [diff]
 	indentHeuristic = true
 	colorMoved = default
+[log]
+	date = auto:human
