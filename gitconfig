@@ -18,7 +18,7 @@
 	subup = submodule update --init --recursive
         propre = "!f() { git clean -Xfd || sudo git clean -Xfd; }; f"
         which = !git branch -a | grep -i
-        lucky = "!f() { branch=$(git branch | grep -i -m1 $1) && git checkout $(git branch | grep -i -m1 $1) ; }; f"
+        lucky = "!f() { branch=$(git branch -a | grep -i -m1 $1) && git checkout $(git branch -a | grep -i -m1 $1 | sed 's%remotes/%%g') ; }; f"
         wdiff = diff --word-diff=color
         bourre = push --force-with-lease
         stashi = stash --keep-index
