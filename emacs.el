@@ -38,6 +38,7 @@
  '(git-link-open-in-browser t)
  '(global-font-lock-mode t nil (font-lock))
  '(indent-tabs-mode nil)
+ '(markdown-command "pandoc --quiet --standalone")
  '(notmuch-saved-searches
    (quote
     ((:name "inbox" :query "tag:inbox" :key "i")
