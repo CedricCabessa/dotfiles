@@ -17,15 +17,18 @@
 [alias]
 	subup = submodule update --init --recursive
         propre = "!f() { git clean -Xfd || sudo git clean -Xfd; }; f"
+        toutpropre = "!f() { git clean -xfd || sudo git clean -xfd; }; f"
         which = !git branch -a | grep -i
         lucky = "!f() { branch=$(git branch -a | grep -i -m1 $1) && git checkout $(git branch -a | grep -i -m1 $1 | sed 's%remotes/%%g') ; }; f"
         wdiff = diff --word-diff=color
         bourre = push --force-with-lease
         stashi = stash --keep-index
+        changelog = "!f() { git log --pretty=format:'%Cgreen%s%Creset (%an)%n%b%n' --first-parent $(git describe --tags --abbrev=0)..HEAD;}; f"
 [status]
 	submoduleSummary = true
 [rebase]
 	autostash = true
+	autoSquash = true
 [stash]
 	showPatch = true
 [commit]
