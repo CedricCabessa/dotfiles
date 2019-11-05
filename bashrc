@@ -149,8 +149,8 @@ alias tiga="tig --all"
 export GREP_COLOR="01;31"
 alias grep="grep --color"
 # history
-export HISTSIZE=
-export HISTFILESIZE=
+export HISTSIZE=100000000
+export HISTFILESIZE=-1
 export HISTCONTROL=erasedups:ignorespace
 shopt -s histappend
 export MANPATH=~/.local/man${MANPATH:+:$MANPATH}:
