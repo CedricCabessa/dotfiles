@@ -215,6 +215,7 @@
 (add-hook 'rust-mode-hook 'my-rust)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'racer-mode-hook #'company-mode)
+(add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 
 
 (setq company-tooltip-align-annotations t)
@@ -235,4 +236,4 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- )
+ '(default ((t (:inherit nil :stipple nil :background "black" :foreground "wheat" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 120 :width normal :foundry "ADBO" :family "Source Code Pro")))))
