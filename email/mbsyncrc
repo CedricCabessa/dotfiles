@@ -1,0 +1,22 @@
+Create Slave
+SyncState *
+
+IMAPAccount scw
+SSLType IMAPS
+Host mail.online.net
+User ccabessa@online.net
+PassCmd "secret-tool lookup email scaleway"
+
+MaildirStore scw-local
+# The trailing "/" is important
+Path ~/Maildir/
+Inbox ~/Maildir/Inbox
+Subfolders Verbatim
+
+IMAPStore scw-remote
+Account scw
+
+Channel scw
+Master :scw-remote:
+Slave :scw-local:
+Create Slave
