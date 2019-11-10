@@ -15,6 +15,14 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# User specific environment
+if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
+then
+    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+fi
+export PATH
+
+
 ##
 # if pwd (\w) is too long, replace first characters by $trunc_symbol
 # @see: http://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/x783.html
