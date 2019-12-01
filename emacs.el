@@ -58,6 +58,7 @@
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
+ ;; install with package-install-selected-packages
  '(package-selected-packages
    (quote
     (deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
