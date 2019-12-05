@@ -283,3 +283,13 @@ dkr() {
 if [[ -f /usr/share/fzf/shell/key-bindings.bash ]]; then
     . /usr/share/fzf/shell/key-bindings.bash
 fi
+
+if [[ -f /etc/profile.d/vte.sh ]]; then
+    # https://bugzilla.redhat.com/show_bug.cgi?id=998666
+    # https://gitlab.gnome.org/GNOME/vte/issues/37
+    if cmp /etc/profile.d/vte.sh /etc/profile.d/01vte.sh >/dev/null; then
+        echo "sudo rm /etc/profile.d/vte.sh"
+    else
+        echo "vte bug: /etc/profile.d/vte.sh and /etc/profile.d/01vte.sh differ"
+    fi
+fi
