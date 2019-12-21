@@ -52,9 +52,9 @@
  '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
  '(org-capture-templates
    (quote
-    (("n" "notes" entry
-      (file "~/org/notes.org")
-      "* %T"))) t)
+    (("j" "Journal" entry
+      (file+olp+datetree "~/org/journal.org")
+      "* %u %?\n%F\n" :prepend t))) t)
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
@@ -128,11 +128,6 @@
 (setq org-agenda-start-on-weekday nil)
 ;; first day of week is monday
 (setq calendar-week-start-day 1)
-
-(setq org-capture-templates
-(quote
-(("j" "Journal" entry (file+datetree "~/org/work/journal.org")
-  "* %?\n%U\n"))))
 
 ;;;;;;;;;;;;;;
 ;; SHORTCUTS;;
