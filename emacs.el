@@ -49,11 +49,11 @@
      (:name "all mail" :query "*" :key "a")
      (:name "tracking" :query "thread:{tag:tracking} and thread:{tag:unread}")
      (:name "sentry" :query "tag:sentry and tag:unread"))))
- '(org-agenda-files (quote ("~/org/perso/" "~/org/work/")))
+ '(org-agenda-files (quote ("~/org")))
  '(org-capture-templates
    (quote
     (("j" "Journal" entry
-      (file+olp+datetree "~/org/journal.org")
+      (file "~/org/journal.org")
       "* %u %?\n%F\n" :prepend t))) t)
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
