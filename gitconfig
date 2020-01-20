@@ -38,3 +38,5 @@
 	colorMoved = default
 [log]
 	date = auto:human
+[tag]
+	sort = v:refname
