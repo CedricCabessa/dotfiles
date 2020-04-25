@@ -35,9 +35,14 @@
  '(fci-rule-column 80)
  '(fill-column 80)
  '(flyspell-default-dictionary "english")
+ '(git-commit-summary-max-length 50)
  '(git-link-open-in-browser t)
  '(global-font-lock-mode t nil (font-lock))
  '(indent-tabs-mode nil)
+ '(lsp-pyls-configuration-sources ["flake8"])
+ '(lsp-pyls-plugins-flake8-enabled t)
+ '(lsp-pyls-plugins-pycodestyle-enabled nil)
+ '(lsp-pyls-plugins-pyflakes-enabled nil)
  '(markdown-command "pandoc --quiet --standalone")
  '(notmuch-saved-searches
    (quote
@@ -54,14 +59,20 @@
    (quote
     (("j" "Journal" entry
       (file "~/org/journal.org")
-      "* %u %?\n%F\n" :prepend t))) t)
+      "* %u %?
+%F
+" :prepend t)
+     ("w" "work achievement" entry
+      (file "~/org/work/journal.org")
+      "* %u %?
+" :prepend t))))
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  ;; install with package-install-selected-packages
  '(package-selected-packages
    (quote
-    (deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -177,9 +188,7 @@
   (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|XXX\\):"
                                  1 font-lock-warning-face t)))
   (which-function-mode)
-  (yas-minor-mode)
   (auto-complete-mode)
-  (elpy-enable)
 )
 
 (defun my-text()
@@ -196,13 +205,7 @@
 (require 'auto-complete-config)
 ;; go get github.com/rogpeppe/godef
 ;; go get github.com/nsf/gocode
-(require 'go-autocomplete)
-
-;; For elpy
-(setq elpy-rpc-python-command "python3")
-;; For interactive shell
-(setq python-shell-interpreter "python3")
-;; make sure needed package are installed: M-x elpy-config RET
+;; (require 'go-autocomplete)
 
 (global-magit-file-mode)
 
@@ -213,6 +216,9 @@
 (add-hook 'racer-mode-hook #'company-mode)
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 
+(require 'lsp-mode)
+(use-package lsp-ui)
+(add-hook 'python-mode-hook #'lsp)
 
 (setq company-tooltip-align-annotations t)
 
@@ -221,7 +227,7 @@
 ;;;;;;;;;;;;
 
 ;; notmuch conf is split in another file
-(load-file "/usr/share/emacs/site-lisp/notmuch.elc")
+;(load-file "/usr/share/emacs/site-lisp/notmuch.elc")
 (if (file-exists-p "~/.notmuch.el") (load-file (expand-file-name "~/.notmuch.el")))
 (setq user-mail-address "ced@ryick.net")
 ;; close sent message frame after sending
