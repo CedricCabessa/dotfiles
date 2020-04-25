@@ -293,3 +293,7 @@ if [[ -f /etc/profile.d/vte.sh ]]; then
         echo "vte bug: /etc/profile.d/vte.sh and /etc/profile.d/01vte.sh differ"
     fi
 fi
+
+if [[ -f /usr/share/autojump/autojump.sh ]]; then
+    . /usr/share/autojump/autojump.sh
+fi
