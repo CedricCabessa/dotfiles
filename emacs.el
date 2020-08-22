@@ -69,10 +69,9 @@
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
- ;; install with package-install-selected-packages
  '(package-selected-packages
    (quote
-    (use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -82,7 +81,7 @@
 ;;(exec-path-from-shell-initialize)
 
 (setenv "SSH_AUTH_SOCK"
- (concat "/run/user/" (number-to-string (user-uid)) "/ssh-agent.socket"))
+ (concat "/run/user/" (number-to-string (user-uid)) "/keyring/ssh"))
 
 ;;;;;;;;;;
 ;; VIEW ;;
@@ -196,11 +195,6 @@
   (auto-fill-mode)
 )
 
-(defun my-rust()
-  (racer-mode 1)
-  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
-)
-
 (ac-config-default)
 (require 'auto-complete-config)
 ;; go get github.com/rogpeppe/godef
@@ -211,7 +205,6 @@
 
 (add-hook 'prog-mode-hook 'my-code)
 (add-hook 'text-mode-hook 'my-text)
-(add-hook 'rust-mode-hook 'my-rust)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'racer-mode-hook #'company-mode)
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
@@ -219,6 +212,9 @@
 (require 'lsp-mode)
 (use-package lsp-ui)
 (add-hook 'python-mode-hook #'lsp)
+(add-hook 'python-mode-hook 'blacken-mode)
+
+(add-hook 'rust-mode-hook #'lsp)
 
 (setq company-tooltip-align-annotations t)
 
