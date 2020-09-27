@@ -54,7 +54,10 @@
      (:name "all mail" :query "*" :key "a")
      (:name "tracking" :query "thread:{tag:tracking} and thread:{tag:unread}")
      (:name "sentry" :query "tag:sentry and tag:unread"))))
- '(org-agenda-files (quote ("~/org")))
+ '(org-agenda-files
+   (quote
+    ("~/org/work/ledger.org" "~/org/journal.org" "~/org/mob.org")))
+ '(org-babel-python-command "python3")
  '(org-capture-templates
    (quote
     (("j" "Journal" entry
@@ -66,12 +69,14 @@
       (file "~/org/work/journal.org")
       "* %u %?
 " :prepend t))))
+ '(org-duration-format (quote ((special . h:mm))))
  '(org-mobile-directory "~/org/mobile")
  '(org-mobile-force-id-on-agenda-items nil)
  '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
     (org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+ '(rust-format-on-save t)
  '(show-paren-mode t nil (paren)))
 
 (add-to-list 'load-path (expand-file-name "~/.emacs.d/site"))
@@ -82,7 +87,7 @@
 
 (setenv "SSH_AUTH_SOCK"
  (concat "/run/user/" (number-to-string (user-uid)) "/keyring/ssh"))
-
+(setenv "WORKON_HOME" "/home/ccabessa/.local/share/virtualenvs/")
 ;;;;;;;;;;
 ;; VIEW ;;
 ;;;;;;;;;;
@@ -138,6 +143,12 @@
 (setq org-agenda-start-on-weekday nil)
 ;; first day of week is monday
 (setq calendar-week-start-day 1)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '((shell . t)
+   (python . t)
+))
 
 ;;;;;;;;;;;;;;
 ;; SHORTCUTS;;
