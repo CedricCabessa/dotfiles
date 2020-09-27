@@ -274,9 +274,11 @@ dkr() {
     docker exec -i -t $1 /bin/bash
 }
 
-if [[ -f /usr/share/fzf/shell/key-bindings.bash ]]; then
-    . /usr/share/fzf/shell/key-bindings.bash
-fi
+_src_exists() {
+    if [[ -f $1 ]]; then
+        . $1
+    fi
+}
 
 if [[ -f /etc/profile.d/vte.sh ]]; then
     # https://bugzilla.redhat.com/show_bug.cgi?id=998666
@@ -288,6 +290,6 @@ if [[ -f /etc/profile.d/vte.sh ]]; then
     fi
 fi
 
-if [[ -f /usr/share/autojump/autojump.sh ]]; then
-    . /usr/share/autojump/autojump.sh
-fi
+_src_exists /usr/share/doc/fzf/examples/key-bindings.bash
+_src_exists /usr/share/autojump/autojump.sh
+_src_exists /usr/share/doc/fzf/examples/completion.bash
