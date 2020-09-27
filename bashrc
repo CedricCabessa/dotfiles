@@ -153,6 +153,7 @@ alias ls="ls $LS_OPTIONS"
 alias ll="ls $LS_OPTIONS -lh"
 alias la="ls $LS_OPTIONS -la"
 alias tiga="tig --all"
+alias b="batcat"
 # colorize matched pattern
 export GREP_COLOR="01;31"
 alias grep="grep --color"

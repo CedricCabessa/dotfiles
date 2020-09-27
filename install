@@ -28,6 +28,7 @@ copy_install screenrc
 copy_install tigrc
 copy_install vimrc
 copy_install local/bin/git-bonsai
+copy_install config/bat
 
 sudo dnf install emacs vim tig autojump fzf git git-email ripgrep emacs-notmuch \
      notmuch aspell aspell-en aspell-fr
