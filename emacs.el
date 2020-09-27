@@ -70,9 +70,6 @@
       "* %u %?
 " :prepend t))))
  '(org-duration-format (quote ((special . h:mm))))
- '(org-mobile-directory "~/org/mobile")
- '(org-mobile-force-id-on-agenda-items nil)
- '(org-mobile-inbox-for-pull "~/org/mob.org")
  '(package-selected-packages
    (quote
     (org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
@@ -88,6 +85,7 @@
 (setenv "SSH_AUTH_SOCK"
  (concat "/run/user/" (number-to-string (user-uid)) "/keyring/ssh"))
 (setenv "WORKON_HOME" "/home/ccabessa/.local/share/virtualenvs/")
+
 ;;;;;;;;;;
 ;; VIEW ;;
 ;;;;;;;;;;
@@ -136,7 +134,6 @@
 
 ;; show agenda
 (define-key global-map "\C-ca" 'org-agenda)
-(define-key global-map "\C-c." 'org-time-stamp)
 ;; display 7 days in overview
 (setq org-agenda-ndays 7)
 ;; start calendar on the current day
