@@ -229,23 +229,16 @@ then
 fi
 
 
-if [[ -n $DISPLAY && $UID != 0 ]]
-then
-    #X11 mode and normal user: if emacs is not yet launch, launch it
-    #e is used for quick editing (don't hang on term)
-    export EDITOR="emacsclient -a emacs"
-    e()
-    {
-	emacsclient -n -a emacs $@
-    }
-else
-    #assume emacs daemon is launched
-    export EDITOR="emacsclient -a vim"
-    e()
-    {
-	$EDITOR $@
-    }
-fi
+#e is used for quick editing (don't hang on term)
+export EDITOR="emacsclient"
+e()
+{
+    file=$1
+    if [[ $# == 2 ]]; then
+        line="+$2"
+    fi
+    emacsclient -n $line $file
+}
 
 export VISUAL=$EDITOR
 
