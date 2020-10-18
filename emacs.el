@@ -54,9 +54,6 @@
      (:name "all mail" :query "*" :key "a")
      (:name "tracking" :query "thread:{tag:tracking} and thread:{tag:unread}")
      (:name "sentry" :query "tag:sentry and tag:unread"))))
- '(org-agenda-files
-   (quote
-    ("~/org/work/ledger.org" "~/org/journal.org" "~/org/mob.org")))
  '(org-babel-python-command "python3")
  '(org-capture-templates
    (quote
@@ -70,9 +67,20 @@
       "* %u %?
 " :prepend t))))
  '(org-duration-format (quote ((special . h:mm))))
+ '(org-log-into-drawer t)
+ '(org-roam-capture-templates
+   (quote
+    (("d" "default" plain
+      (function org-roam-capture--get-point)
+      "%?" :file-name "%<%Y%m%d%H%M%S>-${slug}" :head "#+title: ${title}
+%(org-insert-time-stamp nil nil t nil nil nil)
+
+" :unnarrowed t :time-prompt t))))
+ '(org-startup-folded t)
+ '(org-todo-keywords (quote ((sequence "TODO(!)" "DONE(!)"))))
  '(package-selected-packages
    (quote
-    (org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (deft org-roam org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
  '(rust-format-on-save t)
  '(show-paren-mode t nil (paren)))
 
@@ -147,6 +155,27 @@
    (python . t)
 ))
 
+(setq org-roam-directory "~/org/roam")
+(add-hook 'after-init-hook 'org-roam-mode)
+
+(use-package deft
+  :after org
+  :bind
+  ("C-c n d" . deft)
+  :custom
+  (deft-recursive t)
+  (deft-use-filter-string-for-filename t)
+  (deft-default-extension "org")
+  (deft-directory "~/org/roam/"))
+
+(setq org-agenda-files
+   (seq-filter
+    (lambda (x) (and (not (string-match-p (regexp-quote "/archive/") x))
+                     (not (string-match-p (regexp-quote "/roam/") x))
+                     (not (string-match-p (regexp-quote "/.#") x))))
+    (directory-files-recursively "~/org" "org$")
+    )
+   )
 ;;;;;;;;;;;;;;
 ;; SHORTCUTS;;
 ;;;;;;;;;;;;;;
