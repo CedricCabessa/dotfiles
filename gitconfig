@@ -40,3 +40,5 @@
 	date = auto:human
 [tag]
 	sort = v:refname
+[merge]
+	tool = meld

@@ -80,7 +80,9 @@
  '(org-todo-keywords (quote ((sequence "TODO(!)" "DONE(!)"))))
  '(package-selected-packages
    (quote
-    (deft org-roam org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (org-roam-server org-super-agenda org-beautify-theme elpher deft org-roam org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+ '(racer-rust-src-path
+   "/home/ccabessa/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
  '(rust-format-on-save t)
  '(show-paren-mode t nil (paren)))
 
@@ -141,6 +143,7 @@
 ;;;;;;;;;;;;
 
 ;; show agenda
+(org-super-agenda-mode)
 (define-key global-map "\C-ca" 'org-agenda)
 ;; display 7 days in overview
 (setq org-agenda-ndays 7)
@@ -155,6 +158,8 @@
    (python . t)
 ))
 
+(require 'org-protocol)
+(require 'org-roam-protocol)
 (setq org-roam-directory "~/org/roam")
 (add-hook 'after-init-hook 'org-roam-mode)
 
@@ -176,6 +181,29 @@
     (directory-files-recursively "~/org" "org$")
     )
    )
+
+
+(setq org-super-agenda-groups
+  '(
+    (:name "work"
+           :category "ledger")
+    (:name "perso"
+           :category "perso")
+    )
+  )
+
+(setq org-agenda-custom-commands
+  '(("c" . "My Custom Agendas")
+    ("cu" "Unscheduled TODO"
+     ((todo ""
+       ((org-agenda-overriding-header "\nUnscheduled TODO")
+        (org-agenda-skip-function '(org-agenda-skip-entry-if 'scheduled 'deadline)))
+       ))
+     nil
+     nil)
+    )
+  )
+
 ;;;;;;;;;;;;;;
 ;; SHORTCUTS;;
 ;;;;;;;;;;;;;;
@@ -232,26 +260,34 @@
   (auto-fill-mode)
 )
 
+(defun my-rust()
+  (racer-mode)
+  (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
+  (setq company-tooltip-align-annotations t)
+)
+
 (ac-config-default)
 (require 'auto-complete-config)
 ;; go get github.com/rogpeppe/godef
 ;; go get github.com/nsf/gocode
 ;; (require 'go-autocomplete)
 
-(global-magit-file-mode)
+(require 'magit)
+;(global-magit-file-mode)
 
 (add-hook 'prog-mode-hook 'my-code)
 (add-hook 'text-mode-hook 'my-text)
 (add-hook 'racer-mode-hook #'eldoc-mode)
 (add-hook 'racer-mode-hook #'company-mode)
+(add-hook 'rust-mode-hook 'my-rust)
+
+
 (add-to-list 'auto-mode-alist '("\\.sls\\'" . yaml-mode))
 
 (require 'lsp-mode)
 (use-package lsp-ui)
 (add-hook 'python-mode-hook #'lsp)
 (add-hook 'python-mode-hook 'blacken-mode)
-
-(add-hook 'rust-mode-hook #'lsp)
 
 (setq company-tooltip-align-annotations t)
 
