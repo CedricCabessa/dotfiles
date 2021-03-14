@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# Backup import files
+# - Sync: synced via syncthing
+# - org: synced via syncthing
+# - backup/services:
+#   - twitter.txt: updated via this script
+#   - feedly.opml: updated manually
+# - backup/Signal: Signal export, synced via syncthing
+set -e
+
+SERVICES=$HOME/backup/services
+SIGNAL=$HOME/backup/Signal
+TWITTER=$SERVICES/twitter.txt
+
+function twitter() {
+    cd ~/backup
+    if [[ ! -d venv ]]; then
+        python3 -m venv venv
+        . venv/bin/activate
+        pip install python-twitter pyyaml
+    else
+        . venv/bin/activate
+    fi
+
+    python ${WD}/twitter_backup.py > $TWITTER
+}
+
+function dup() {
+    cd $HOME
+    duplicity \
+   --include $HOME/Sync \
+   --include $HOME/org \
+   --include $SIGNAL \
+   --include $SERVICES \
+   --exclude '**' \
+   full \
+   $HOME \
+   $URL
+}
+
+function dup_check() {
+    cd $HOME
+    duplicity \
+   --include $HOME/Sync \
+   --include $HOME/org \
+   --include $SIGNAL \
+   --include $SERVICES \
+   --exclude '**' \
+   verify --compare-data $URL $HOME
+}
+
+
+function dup_clean() {
+    duplicity remove-older-than 2M --force $URL
+}
+
+URL="s3://s3.fr-par.scw.cloud/ced-backup/dup"
+WD=$(dirname $(readlink -f $0))
+export $(cat ${WD}/secret)
+
+if [[ $# == 1 && $1 == "check" ]]; then
+    dup_check
+    exit $?
+fi
+
+echo "export twitter"
+twitter
+echo "duplicity"
+dup
+echo "remove old backup"
+dup_clean
