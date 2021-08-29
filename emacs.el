@@ -30,6 +30,7 @@
  '(case-fold-search t)
  '(compilation-scroll-output t)
  '(custom-enabled-themes (quote (wheatgrass)))
+ '(emojify-company-tooltips-p nil)
  '(eshell-save-history-on-exit t)
  '(fci-rule-color "gray14")
  '(fci-rule-column 80)
@@ -39,10 +40,16 @@
  '(git-link-open-in-browser t)
  '(global-font-lock-mode t nil (font-lock))
  '(indent-tabs-mode nil)
+ '(js-indent-level 2)
  '(lsp-pyls-configuration-sources ["flake8"])
  '(lsp-pyls-plugins-flake8-enabled t)
  '(lsp-pyls-plugins-pycodestyle-enabled nil)
  '(lsp-pyls-plugins-pyflakes-enabled nil)
+ '(lsp-ui-doc-alignment (quote window))
+ '(lsp-ui-doc-delay 1)
+ '(lsp-ui-doc-position (quote bottom))
+ '(lsp-ui-doc-show-with-mouse nil)
+ '(lsp-ui-doc-use-childframe t)
  '(markdown-command "pandoc --quiet --standalone")
  '(notmuch-saved-searches
    (quote
@@ -66,6 +73,7 @@
       (file "~/org/work/journal.org")
       "* %u %?
 " :prepend t))))
+ '(org-confirm-babel-evaluate nil)
  '(org-duration-format (quote ((special . h:mm))))
  '(org-log-into-drawer t)
  '(org-roam-capture-templates
@@ -80,7 +88,7 @@
  '(org-todo-keywords (quote ((sequence "TODO(!)" "DONE(!)"))))
  '(package-selected-packages
    (quote
-    (org-roam-server org-super-agenda org-beautify-theme elpher deft org-roam org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell go-autocomplete elpy go-mode rust-mode)))
+    (protobuf-mode scala-mode company-emoji emojify tabbar lsp-treemacs org-roam-server org-super-agenda org-beautify-theme elpher deft org-roam org blacken flycheck-mypy use-package lsp-ui lsp-mode deadgrep git-link flycheck notmuch racer editorconfig yaml-mode magit fill-column-indicator markdown-mode exec-path-from-shell elpy go-mode rust-mode)))
  '(racer-rust-src-path
    "/home/ccabessa/.rustup/toolchains/stable-x86_64-unknown-linux-gnu/lib/rustlib/src/rust/library")
  '(rust-format-on-save t)
@@ -142,6 +150,7 @@
 ;;ORG-MODE;;
 ;;;;;;;;;;;;
 
+(setq org-roam-v2-ack t)
 ;; show agenda
 (org-super-agenda-mode)
 (define-key global-map "\C-ca" 'org-agenda)
@@ -158,10 +167,12 @@
    (python . t)
 ))
 
+(setq org-roam-directory "~/org/roam")
+(require 'org-roam)
+(org-roam-setup)
 (require 'org-protocol)
 (require 'org-roam-protocol)
-(setq org-roam-directory "~/org/roam")
-(add-hook 'after-init-hook 'org-roam-mode)
+(add-hook 'after-init-hook #'global-emojify-mode)
 
 (use-package deft
   :after org
@@ -252,28 +263,23 @@
   (font-lock-add-keywords nil '(("\\<\\(FIXME\\|TODO\\|BUG\\|XXX\\):"
                                  1 font-lock-warning-face t)))
   (which-function-mode)
-  (auto-complete-mode)
+  ;;(auto-complete-mode)
 )
 
 (defun my-text()
   (flyspell-mode)
   (auto-fill-mode)
+  (company-mode)
 )
 
 (defun my-rust()
   (racer-mode)
   (define-key rust-mode-map (kbd "TAB") #'company-indent-or-complete-common)
   (setq company-tooltip-align-annotations t)
+  (lsp)
 )
 
-(ac-config-default)
-(require 'auto-complete-config)
-;; go get github.com/rogpeppe/godef
-;; go get github.com/nsf/gocode
-;; (require 'go-autocomplete)
-
 (require 'magit)
-;(global-magit-file-mode)
 
 (add-hook 'prog-mode-hook 'my-code)
 (add-hook 'text-mode-hook 'my-text)
@@ -286,10 +292,20 @@
 
 (require 'lsp-mode)
 (use-package lsp-ui)
+(lsp-treemacs-sync-mode 1)
 (add-hook 'python-mode-hook #'lsp)
 (add-hook 'python-mode-hook 'blacken-mode)
-
 (setq company-tooltip-align-annotations t)
+
+(add-hook 'go-mode-hook #'lsp-deferred)
+;; Set up before-save hooks to format buffer and add/delete imports.
+;; Make sure you don't have other gofmt/goimports hooks enabled.
+(defun lsp-go-install-save-hooks ()
+  (add-hook 'before-save-hook #'lsp-format-buffer t t)
+  (add-hook 'before-save-hook #'lsp-organize-imports t t)
+  (setq tab-width 4)
+)
+(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
 ;;;;;;;;;;;;
 ;; NOTMUCH;;
@@ -301,6 +317,8 @@
 (setq user-mail-address "ced@ryick.net")
 ;; close sent message frame after sending
 (setq message-kill-buffer-on-exit t)
+
+(require 'company-emoji)
 
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
