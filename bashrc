@@ -15,14 +15,6 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
-# User specific environment
-if ! [[ "$PATH" =~ "$HOME/.local/bin:$HOME/bin:" ]]
-then
-    PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-fi
-export PATH
-
-
 ##
 # if pwd (\w) is too long, replace first characters by $trunc_symbol
 # @see: http://www.tldp.org/HOWTO/Bash-Prompt-HOWTO/x783.html
@@ -290,6 +282,7 @@ if [[ -f /etc/profile.d/vte.sh ]]; then
     fi
 fi
 
-_src_exists /usr/share/doc/fzf/examples/key-bindings.bash
 _src_exists /usr/share/autojump/autojump.sh
-_src_exists /usr/share/doc/fzf/examples/completion.bash
+
+export MCFLY_FUZZY=true
+eval "$(mcfly init bash)"
