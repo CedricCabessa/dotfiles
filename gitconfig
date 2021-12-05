@@ -13,7 +13,7 @@
 	#smtpPass = xxx
 	confirm = auto
 [help]
-	autocorrect = 20
+	autocorrect = prompt
 [alias]
 	subup = submodule update --init --recursive
         propre = "!f() { git clean -Xfd || sudo git clean -Xfd; }; f"
