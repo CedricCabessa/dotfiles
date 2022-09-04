@@ -107,6 +107,12 @@
      nil)
     )
   )
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((shell . t)
+     (python . t)
+     ))
+  (setq org-confirm-babel-evaluate nil)
 
   :bind
   ("C-c a" . 'org-agenda)
@@ -203,8 +209,7 @@
   :ensure t
   :defer t
   :config
-  (setq lsp-ui-sideline-enable nil
-	lsp-ui-doc-delay 2)
+  (setq lsp-ui-doc-delay 2)
   :hook (lsp-mode . lsp-ui-mode)
   :bind (:map lsp-ui-mode-map
 	      ("C-c i" . lsp-ui-imenu)))
@@ -245,6 +250,14 @@
 (add-hook 'python-mode-hook 'blacken-mode)
 ;;; /python
 
+(use-package rustic
+  :ensure t
+  :config
+  ;; comment to disable rustfmt on save
+  (setq rustic-format-on-save t)
+)
+
+
 (use-package docker
   :ensure t
   :bind ("C-c d" . docker))
@@ -261,9 +274,19 @@
 
 (use-package fic-mode
   :ensure t
-  :config
+  :init
   (add-hook 'prog-mode-hook 'fic-mode)
   )
+
+(use-package emojify
+  :hook (after-init . global-emojify-mode)
+  :init
+  (setq emojify-emoji-styles '(unicode))
+  )
+
+;; text
+(add-hook 'text-mode-hook 'flyspell-mode)
+(add-hook 'text-mode-hook 'auto-fill-mode)
 
 ;; wheatgrass theme
 (custom-set-variables
@@ -276,10 +299,12 @@
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
  '(custom-enabled-themes '(wheatgrass))
+ '(fill-column 80)
+ '(js-indent-level 2)
  '(org-agenda-files
    '("~/org/perso/jdr.org" "~/org/perso/perso.org" "~/org/work/clock.org" "~/org/work/journal.org" "~/org/work/ledger.org" "~/org/fleeting_notes.org" "~/org/journal.org"))
  '(package-selected-packages
-   '(fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy)))
+   '(rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
