@@ -87,7 +87,12 @@
      ("w" "work achievement" entry
       (file "~/org/work/journal.org")
       "* %u %?
-" :prepend t))))
+" :prepend t)
+     ("i" "inbox" entry
+      (file "~/org/inbox.org")
+      "* TODO %?\n %U
+" :prepend t)
+     )))
   (setq org-agenda-files
 	(seq-filter
 	 (lambda (x) (and (not (string-match-p (regexp-quote "/archive/") x))
