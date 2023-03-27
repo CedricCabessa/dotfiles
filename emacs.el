@@ -52,15 +52,22 @@
 (global-set-key "\C-\M-y" 'yank-pop-neg)
 
 
-(use-package counsel
+(use-package ivy
   :ensure t
+  :config
+  (ivy-mode 1)
   :init
   (setq ivy-use-virtual-buffers t)
   (setq ivy-count-format "(%d/%d) ")
   ;; remove . and .. for find-file
   (setq ivy-extra-directories ())
-  :config
-  (ivy-mode 1)
+  )
+
+(use-package counsel
+  :ensure t
+  :after ivy
+  :bind (("C-x f" . counsel-fzf)
+	  )
 )
 
 
@@ -283,11 +290,11 @@
   (add-hook 'prog-mode-hook 'fic-mode)
   )
 
-(use-package emojify
-  :hook (after-init . global-emojify-mode)
-  :init
-  (setq emojify-emoji-styles '(unicode))
-  )
+;; (use-package emojify
+;;   :hook (after-init . global-emojify-mode)
+;;   :init
+;;   (setq emojify-emoji-styles '(unicode))
+;;   )
 
 ;; text
 (add-hook 'text-mode-hook 'flyspell-mode)
@@ -307,12 +314,21 @@
  '(fill-column 80)
  '(js-indent-level 2)
  '(org-agenda-files
-   '("~/org/perso/jdr.org" "~/org/perso/perso.org" "~/org/work/clock.org" "~/org/work/journal.org" "~/org/work/ledger.org" "~/org/fleeting_notes.org" "~/org/journal.org"))
+   '("~/org/perso/jdr.org" "~/org/perso/perso.org" "~/org/perso/ref.org" "~/org/work/clock.org" "~/org/work/interviews.org" "~/org/work/journal.org" "~/org/work/ledger.org" "~/org/journal.org"))
+ '(org-agenda-prefix-format
+   '((agenda . "%i %-12:c %?-12t %b")
+     (todo . " %i %-12:c")
+     (tags . " %i %-12:c")
+     (search . " %i %-12:c")))
  '(package-selected-packages
-   '(rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy)))
+   '(yaml projectile fzf rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(fic-face ((t (:foreground "red" :weight bold)))))
+ '(fic-face ((t (:foreground "red" :weight bold))))
+ '(org-level-1 ((t (:inherit outline-1 :extend nil :height 1.5))))
+ '(org-level-2 ((t (:inherit outline-2 :extend nil :height 1.4))))
+ '(org-level-3 ((t (:inherit outline-3 :extend nil :height 1.3))))
+ '(org-level-4 ((t (:inherit outline-4 :extend nil :height 1.4)))))
