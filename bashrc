@@ -284,5 +284,44 @@ fi
 
 _src_exists /usr/share/autojump/autojump.sh
 
-export MCFLY_FUZZY=true
+check_perso() {
+    if ! grep 'grep perso /proc/cmdline' $1 >/dev/null; then
+	echo "$1 is spying you during your free time"
+    fi
+}
+
+check_perso /lib/systemd/system/sentinelone.service
+check_perso /lib/systemd/system/fusioninventory-agent.service
+
+export MCFLY_FUZZY=2
+export MCFLY_RESULTS=30
+export MCFLY_DISABLE_RUN_COMMAND=1
 eval "$(mcfly init bash)"
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# pnpm
+export PNPM_HOME="/home/ccabessa/.local/share/pnpm"
+export PATH="$PNPM_HOME:$PATH"
+# pnpm end
+
+vproxy() {
+    local minivault_host="remote.minivault.ledger-sbx.com"
+    eval $(curl -s "https://${minivault_host}/api/instances" | jq  -r '.[].name' | fzf | awk '{print "ledger-vault proxy https://"$1".minivault.ledger-sbx.com"}')
+}
+
+
+# enable programmable completion features (you don't need to enable
+# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
+# sources /etc/bash.bashrc).
+if ! shopt -oq posix; then
+  if [ -f /usr/share/bash-completion/bash_completion ]; then
+    . /usr/share/bash-completion/bash_completion
+  elif [ -f /etc/bash_completion ]; then
+    . /etc/bash_completion
+  fi
+fi
+
+if [ -f ~/.private ]; then
+    . ~/.private
+fi
