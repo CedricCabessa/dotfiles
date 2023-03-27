@@ -34,6 +34,7 @@ function dup() {
    --include $SIGNAL \
    --include $SERVICES \
    --exclude '**' \
+   --file-prefix-archive "archive/" \
    full \
    $HOME \
    $URL
@@ -46,13 +47,15 @@ function dup_check() {
    --include $HOME/org \
    --include $SIGNAL \
    --include $SERVICES \
+   --file-prefix-archive "archive/" \
    --exclude '**' \
    verify --compare-data $URL $HOME
 }
 
 
 function dup_clean() {
-    duplicity remove-older-than 2M --force $URL
+    duplicity remove-older-than 2M --force $URL \
+    --file-prefix-archive "archive/"
 }
 
 URL="s3://s3.fr-par.scw.cloud/ced-backup/dup"
