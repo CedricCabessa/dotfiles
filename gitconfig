@@ -42,3 +42,9 @@
 	sort = v:refname
 [merge]
 	tool = meld
+[init]
+	defaultBranch = main
+[push]
+	autoSetupRemote = true
+[github]
+	user = CedricCabessa
