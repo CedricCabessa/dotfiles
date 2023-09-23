@@ -52,24 +52,44 @@
 (global-set-key "\C-\M-y" 'yank-pop-neg)
 
 
-(use-package ivy
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 6))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/radian-software/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+(use-package vertico
   :ensure t
-  :config
-  (ivy-mode 1)
   :init
-  (setq ivy-use-virtual-buffers t)
-  (setq ivy-count-format "(%d/%d) ")
-  ;; remove . and .. for find-file
-  (setq ivy-extra-directories ())
+  (vertico-mode)
   )
-
-(use-package counsel
+(use-package orderless
   :ensure t
-  :after ivy
-  :bind (("C-x f" . counsel-fzf)
-	  )
+  :init (icomplete-mode)
+  :custom (completion-styles '(orderless))
+  )
+(use-package marginalia
+  :ensure t
+  :init
+  (marginalia-mode)
+  )
+(use-package eglot
+  :ensure t
+  :defer t
+  :hook (python-mode . eglot-ensure)
 )
-
+; pylsp-mypy
+; pylsp-rope
+; python-lsp-ruff
+; pyls-isort
+; python-lsp-black
 
 (use-package org
   :ensure t
@@ -183,24 +203,6 @@
   (setq git-link-open-in-browser t)
 )
 
-;;; prog ;;;
-; https://gitlab.com/nathanfurnal/dotemacs/-/snippets/2060535
-; lsp-go-install-save-hooks
-
-(defun lsp-go ()
-  (lsp-deferred)
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-
-(use-package lsp-mode
-  :ensure t
-  :defer t
-  :commands (lsp lsp-deferred)
-  :hook (
-	 (python-mode . lsp-deferred)
-	 (go-mode . lsp-go)
-	 )
-)
 
 ;; Provides completion, with the proper backend
 ;; it will provide Python completion.
@@ -213,18 +215,6 @@
         company-dabbrev-code-other-buffers t)
   :hook ((text-mode . company-mode)
          (prog-mode . company-mode)))
-
-;; Provides visual help in the buffer
-;; For example definitions on hover.
-;; The `imenu` lets me browse definitions quickly.
-(use-package lsp-ui
-  :ensure t
-  :defer t
-  :config
-  (setq lsp-ui-doc-delay 2)
-  :hook (lsp-mode . lsp-ui-mode)
-  :bind (:map lsp-ui-mode-map
-	      ("C-c i" . lsp-ui-imenu)))
 
 ;; Required to easily switch virtual envs
 ;; via the menu bar or with `pyvenv-workon`
@@ -243,19 +233,6 @@
 					  (pyvenv-restart-python)))
   :hook (python-mode . pyvenv-mode))
 
-;; Language server for Python
-;; Read the docs for the different variables set in the config.
-(use-package lsp-pyright
-  :ensure t
-  :defer t
-  :config
-  (setq lsp-pyright-auto-import-completions t
-	lsp-pyright-use-library-code-for-types t
-	lsp-pyright-venv-path "~/.local/share/virtualenvs")
-  :hook ((python-mode . (lambda ()
-                          (require 'lsp-pyright) (lsp-deferred)))))
-
-
 (use-package blacken
   :ensure t
   )
@@ -268,7 +245,6 @@
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
 )
-
 
 (use-package docker
   :ensure t
@@ -296,6 +272,15 @@
 ;;   (setq emojify-emoji-styles '(unicode))
 ;;   )
 
+(use-package org-super-links
+  :straight (org-super-links :type git :host github :repo "toshism/org-super-links" :branch "develop")
+  :ensure t
+  :config
+  (setq org-super-links-backlink-prefix nil)
+  :bind (("C-c s s" . org-super-links-link)
+         ("C-c s l" . org-super-links-store-link)
+         ("C-c s C-l" . org-super-links-insert-link)))
+
 ;; text
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'auto-fill-mode)
@@ -320,8 +305,11 @@
      (todo . " %i %-12:c")
      (tags . " %i %-12:c")
      (search . " %i %-12:c")))
+ '(org-id-link-to-org-use-id t)
  '(package-selected-packages
-   '(yaml projectile fzf rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy)))
+   '(yaml projectile fzf rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy))
+ '(read-file-name-completion-ignore-case t)
+ '(vc-follow-symlinks nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
