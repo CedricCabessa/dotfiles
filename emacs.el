@@ -83,7 +83,7 @@
 (use-package eglot
   :ensure t
   :defer t
-  :hook (python-mode . eglot-ensure)
+  :hook ((python-mode . eglot-ensure) (rustic-mode . eglot-ensure))
 )
 ; pylsp-mypy
 ; pylsp-rope
@@ -281,9 +281,28 @@
          ("C-c s l" . org-super-links-store-link)
          ("C-c s C-l" . org-super-links-insert-link)))
 
+(use-package indent-tools
+  :ensure t
+  :bind (("C-c <" . indent-tools-hydra/body))
+  )
+
+(use-package consult
+  :bind (("M-s r" . consult-ripgrep))
+)
+
 ;; text
 (add-hook 'text-mode-hook 'flyspell-mode)
 (add-hook 'text-mode-hook 'auto-fill-mode)
+
+(use-package markdown-mode
+  :ensure t
+  :mode ("*\\.md" . gfm-mode)
+  :config
+  (setq markdown-css-paths '("https://markdowncss.github.io/retro/css/retro.css"))
+  )
+(use-package grip-mode
+  :ensure t
+  )
 
 ;; wheatgrass theme
 (custom-set-variables
@@ -295,9 +314,11 @@
    [default default default italic underline success warning error])
  '(ansi-color-names-vector
    ["#242424" "#e5786d" "#95e454" "#cae682" "#8ac6f2" "#333366" "#ccaa8f" "#f6f3e8"])
+ '(css-indent-offset 2)
  '(custom-enabled-themes '(wheatgrass))
  '(fill-column 80)
  '(js-indent-level 2)
+ '(markdown-open-command "~/.local/bin/markdown-preview")
  '(org-agenda-files
    '("~/org/perso/jdr.org" "~/org/perso/perso.org" "~/org/perso/ref.org" "~/org/work/clock.org" "~/org/work/interviews.org" "~/org/work/journal.org" "~/org/work/ledger.org" "~/org/journal.org"))
  '(org-agenda-prefix-format
@@ -308,7 +329,9 @@
  '(org-id-link-to-org-use-id t)
  '(package-selected-packages
    '(yaml projectile fzf rustic rust-mode dockerfile-mode elpher fic-mode org-roam-ui deft plantuml-mode go-mode emojify counsel yaml-mode docker org-super-agenda org-super-agenda-mode blacken pyvenv lsp-ui company lsp-pyright lsp-jedi magit use-package fill-column-indicator git-link org-roam protobuf-mode scala-mode ivy))
+ '(read-buffer-completion-ignore-case t)
  '(read-file-name-completion-ignore-case t)
+ '(typescript-indent-level 2)
  '(vc-follow-symlinks nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
