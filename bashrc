@@ -310,6 +310,10 @@ vproxy() {
     eval $(curl -s "https://${minivault_host}/api/instances" | jq  -r '.[].name' | fzf | awk '{print "ledger-vault proxy https://"$1".minivault.ledger-sbx.com"}')
 }
 
+pdmv() {
+    eval $(pdm venv activate)
+}
+
 
 # enable programmable completion features (you don't need to enable
 # this, if it's already enabled in /etc/bash.bashrc and /etc/profile
