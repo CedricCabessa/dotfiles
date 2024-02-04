@@ -10,6 +10,7 @@
 set -e
 
 SERVICES=$HOME/backup/services
+LAST_BACKUP_FILE=$HOME/backup/last_backup
 SIGNAL=$HOME/backup/Signal
 TWITTER=$SERVICES/twitter.txt
 
@@ -26,39 +27,61 @@ function twitter() {
     python ${WD}/twitter_backup.py > $TWITTER
 }
 
+function _dup_mode() {
+    # make sure glacier transition is higher than this period, or you will need to migrate manually
+    # for recovery
+    if [[ -f ${LAST_BACKUP_FILE} && $(stat -c %Y ${LAST_BACKUP_FILE}) -gt $(( $(date +%s) - 30 * 24 * 3600 )) ]]; then
+	echo "incremental"
+    else
+	echo "full"
+    fi
+}
+
 function dup() {
     cd $HOME
+
+    mode=$1
     duplicity \
-   --include $HOME/Sync \
-   --include $HOME/org \
-   --include $SIGNAL \
-   --include $SERVICES \
-   --exclude '**' \
-   --file-prefix-archive "archive/" \
-   full \
-   $HOME \
-   $URL
+	--include $HOME/Sync \
+	--include $HOME/org \
+	--include $SERVICES \
+	--exclude '**' \
+	--file-prefix-archive "archive/" \
+	$(_dup_mode) \
+	$HOME \
+	$URL_DUP
+
+    if [[ ${mode} == "full" ]]; then
+	touch ${LAST_BACKUP_FILE}
+    fi
 }
 
-function dup_check() {
+function dupsignal() {
     cd $HOME
-    duplicity \
-   --include $HOME/Sync \
-   --include $HOME/org \
-   --include $SIGNAL \
-   --include $SERVICES \
-   --file-prefix-archive "archive/" \
-   --exclude '**' \
-   verify --compare-data $URL $HOME
-}
 
+    mode=$1
+    if [[ ${mode} == "full" ]]; then
+	duplicity \
+	    --include $SIGNAL \
+	    --exclude '**' \
+	    --file-prefix-archive "archive/" \
+	    full \
+	    $HOME \
+	    $URL_SIG
+    fi
+}
 
 function dup_clean() {
-    duplicity remove-older-than 2M --force $URL \
-    --file-prefix-archive "archive/"
+    duplicity remove-older-than 2M --force $URL_DUP \
+	      --file-prefix-archive "archive/"
+
+    duplicity remove-older-than 2M --force $URL_SIG \
+	      --file-prefix-archive "archive/"
+
 }
 
-URL="s3://s3.fr-par.scw.cloud/ced-backup/dup"
+URL_DUP="s3://s3.fr-par.scw.cloud/ced-backup/dup"
+URL_SIG="s3://s3.fr-par.scw.cloud/ced-backup/signal"
 WD=$(dirname $(readlink -f $0))
 export $(cat ${WD}/secret)
 
@@ -68,8 +91,11 @@ if [[ $# == 1 && $1 == "check" ]]; then
 fi
 
 echo "export twitter"
-twitter
+#twitter
+dup_mode=$(_dup_mode)
 echo "duplicity"
-dup
+dup $dup_mode
+echo "duplicity signal"
+dupsignal $dup_mode
 echo "remove old backup"
 dup_clean
