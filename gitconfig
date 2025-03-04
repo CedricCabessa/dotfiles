@@ -40,7 +40,7 @@
 [log]
 	date = auto:human
 [tag]
-	sort = v:refname
+	sort = -v:refname
 [merge]
 	tool = meld
 [init]
@@ -49,3 +49,7 @@
 	autoSetupRemote = true
 [github]
 	user = CedricCabessa
+[column]
+	ui = auto
+[branch]
+	sort = -committerdate
