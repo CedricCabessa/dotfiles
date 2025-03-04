@@ -28,6 +28,8 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(load-file "~/workdir/dotfiles/emacs/ced.el")
+
 ;; Set default font
 (set-face-attribute 'default nil
                     :family "Source Code Pro"
@@ -66,6 +68,8 @@
 
 ; S-<left> S-<right> S-<up> S-<down> to switch window
 (windmove-default-keybindings)
+
+(global-auto-revert-mode 1)
 
 ; vertical completion
 (use-package vertico
@@ -159,6 +163,8 @@
 
 (use-package python-pytest
   :ensure t
+  :bind
+  ("C-c t" . 'python-pytest-dispatch)
   )
 
 (use-package with-venv
@@ -176,10 +182,10 @@
   )
 
 
-(use-package blacken
+(use-package ruff-format
   :ensure t
   :defer t
-  :hook (python-mode . blacken-mode)
+  :hook (python-mode . ruff-format-on-save-mode)
   )
 
 (use-package rustic
@@ -216,6 +222,11 @@
   :hook ((text-mode . company-mode)
          (prog-mode . company-mode)))
 
+(use-package company-box
+  :ensure t
+  :hook (company-mode . company-box-mode)
+  )
+
 ;; show popup completion on point
 (use-package company-quickhelp
   :ensure t
@@ -233,6 +244,8 @@
   :ensure t
   :init
   (setq git-commit-max-length 50)
+  (setopt magit-format-file-function #'magit-format-file-all-the-icons)
+  (add-hook 'git-commit-mode-hook (lambda () (setq fill-column 72)))
   )
 (use-package forge
   :after magit
@@ -243,14 +256,19 @@
   :ensure t
   :config
   (setq git-link-open-in-browser t)
+  (setq git-link-default-branch "main")
   )
 
-(use-package restclient
+(use-package git-gutter
   :ensure t
-  :mode (("\\.http\\'" . restclient-mode))
-  :init (require 'restclient-jq)
   :config
-  (setq restclient-inhibit-cookies t)
+  (global-git-gutter-mode 1)
+  (set-face-background 'git-gutter:modified "purple")
+  (set-face-background 'git-gutter:added "green")
+  (set-face-background 'git-gutter:deleted "red")
+  (setq git-gutter:modified-sign " ")
+  (setq git-gutter:added-sign " ")
+  (setq git-gutter:deleted-sign " ")
   )
 
 (use-package copilot
@@ -279,6 +297,7 @@
 		  ))
     (set-face-attribute (car face) nil :height (cdr face)))
   (add-hook 'org-mode-hook 'my-org)
+  (add-hook 'org-src-mode-hook (lambda () (setq-local flycheck-disabled-checkers '(languagetool))))
   ;; display 7 days in overview
   (setq org-agenda-ndays 7)
   ;; start calendar on the current day
@@ -288,17 +307,21 @@
   (setq org-capture-templates
    '(("i" "inbox" entry
       (file "~/org/inbox.org")
-      "* %U %k\12%?" :prepend t)))
+      "* %U %k%?" :prepend t)
+     ("f" "future" entry
+      (file "~/org/inbox.org")
+      "* TODO %?\nSCHEDULED %^t\n" :prepend t)
+     ("k" "knowledge" entry
+      (file "~/org/knowledge.org")
+      "* %?"  :prepend t)
+     ("d" "decision" entry
+      (file "~/org/decision.org")
+      "* %U %? %^G" :prepend t)
+     )
+    )
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
 
-  (setq org-agenda-files
-	(seq-filter
-	 (lambda (x) (and (not (string-match-p (regexp-quote "/archive/") x))
-			  (not (string-match-p (regexp-quote "/roam/") x))
-			  (not (string-match-p (regexp-quote "/.#") x))))
-	 (directory-files-recursively "~/org" "org$")
-	 )
-	)
+  (setq org-agenda-files (ced/org-find-files "~/org"))
   (setq org-agenda-custom-commands
   '(("c" . "My Custom Agendas")
     ("cu" "Unscheduled TODO"
@@ -308,13 +331,15 @@
        ))
      nil
      nil)
+    ("cU" "Untagged" ((tags-todo "-{.*}")))
+    ("cw" "Work" agenda "" ((org-agenda-files (ced/org-find-files "~/org/work"))))
+    ("cp" "Perso" agenda "" ((org-agenda-files (ced/org-find-files "~/org/perso"))))
     )
   )
   (org-babel-do-load-languages
    'org-babel-load-languages
    '((shell . t)
      (python . t)
-     (restclient . t)
      ))
   (setq org-confirm-babel-evaluate nil)
   (setq org-startup-with-inline-images t)
@@ -325,8 +350,28 @@
 	(tags . " %i %-12:c%?-12t% s %b")
 	(search . " %i %-12:c%?-12t% s %b"))
 	)
+  (add-hook 'org-agenda-mode-hook (lambda () (org-agenda-to-appt 1)))
+  (add-to-list 'org-modules 'org-habit t)
+  (run-with-timer 5 3600 'org-agenda-to-appt 1)
   :bind
   ("C-c a" . 'org-agenda)
+  ("C-c c" . 'org-capture)
+  ("C-c !" . 'org-timestamp-inactive)
+  )
+
+(use-package appt
+  :ensure nil ; built-in
+  :init
+  (appt-activate 1)
+  :config
+  (require 'notifications)
+  (setq appt-disp-window-function
+    (lambda (min-to-app new-time msg)
+      (notifications-notify :title "emacs" :body msg :urgency 'normal)
+      (appt-disp-window min-to-app new-time msg)
+      )
+    )
+  (setq appt-message-warning-time 0)
   )
 
 (defun my-org()
@@ -385,19 +430,24 @@
   (setq markdown-fontify-code-blocks-natively t)
   (setq markdown-enable-math t)
   )
-;; render ghm page
-(use-package grip-mode
-  :ensure t
-  )
 
 (use-package visual-fill-column
   :ensure t
   )
-(use-package org-present
+
+(use-package dslide
+  :ensure t
+  :config
+  (setq dslide-breadcrumb-separator " > ")
+  )
+
+(use-package emojify
   :ensure t
   :init
-  (add-hook 'org-present-mode-hook 'ced/org-present-start)
-  (add-hook 'org-present-mode-quit-hook 'ced/org-present-end)
+  (add-hook 'after-init-hook #'global-emojify-mode)
+  :config
+  (setq emojify-emoji-styles '(unicode))
+  :bind (("C-x :" . emojify-insert-emoji))
   )
 
 ;; incompatible org version??
@@ -412,6 +462,12 @@
 (load-file "~/workdir/elisp/org-excalidraw.el")
 (org-excalidraw-initialize)
 
+(use-package yaml-pro
+  :ensure t
+  :init
+  (add-hook 'yaml-mode-hook 'yaml-pro-ts-mode)
+  )
+
 ;; text
 (add-hook 'text-mode-hook 'my-text)
 ;(add-hook 'text-mode-hook 'texfrag-global-mode)
@@ -419,7 +475,7 @@
 ;; https://emacs.stackexchange.com/questions/3302/live-refresh-of-inline-images-with-org-display-inline-images
 
 (defun my-text()
-  (setq-default fill-column 120)
+  (setq-default fill-column 100)
   (flyspell-mode 1)
   (auto-fill-mode 1)
   (iimage-mode 1)
@@ -427,8 +483,132 @@
   (setq-default visual-fill-column-center-text t)
   (visual-fill-column-mode 1)
   (visual-line-mode 1)
-)
-(load-file "~/workdir/dotfiles/emacs/ced.el")
+  (flymake-mode 1)
+  )
+
+(use-package flycheck
+  :ensure t
+  :config
+  (add-hook 'after-init-hook #'global-flycheck-mode))
+
+(use-package elfeed-protocol
+  :ensure t
+  :config
+  (setq elfeed-protocol-enabled-protocols '(fever ttrss))
+  (elfeed-protocol-enable)
+  (setq elfeed-protocol-feeds '(("ttrss+https://cedc@ced.ryick.net/tt-rss"
+				 :password "ZZZZ")))
+  )
+
+(use-package elfeed
+  :ensure t
+  :bind (:map elfeed-show-mode-map ("f" . ced/elfeed-browse-url-at-point-firefox))
+  :config
+  (setq elfeed-search-title-max-width 100)
+  (add-hook 'elfeed-show-mode-hook (lambda (): (setq show-trailing-whitespace nil)))
+  )
+
+(use-package elfeed-score
+  :ensure t
+  :config
+  (setq elfeed-score-serde-score-file "~/.elfeed/elfeed.score")
+  (elfeed-score-enable)
+  (define-key elfeed-search-mode-map "=" elfeed-score-map)
+  )
+
+(use-package gptel
+  :ensure t
+  :init
+  (setq gptel-model "gemini-1.5-flash"
+        gptel-default-mode 'org-mode
+	gptel-backend (gptel-make-gemini "Gemini" :key "ZZZZ" :stream t))
+  :hook
+  (add-hook 'gptel-post-stream-hook 'gptel-auto-scroll)
+  )
+
+(use-package verb
+  :ensure t
+  :init
+  (advice-add 'verb--response-header-line-string :filter-return #'ced/verb-header-addtime)
+  :config
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
+  (add-hook                       ; https://github.com/federicotdn/verb/issues/82
+   'org-ctrl-c-ctrl-c-hook
+   (lambda ()
+     (when (and (member "verb" (org-get-tags))
+                verb-mode)
+       (call-interactively #'verb-send-request-on-point-other-window-stay))))
+  )
+
+(use-package pocket-reader
+  :ensure t
+  )
+
+
+(use-package eat
+  :ensure t
+  :config
+  (eat-eshell-mode)
+  (add-hook 'eshell-mode-hook (lambda (): (setq show-trailing-whitespace nil)))
+  )
+
+(setq package-selected-packages
+      '(
+	all-the-icons
+	all-the-icons-dired
+	blacken
+	bufler
+	company
+	company-box
+	company-quickhelp
+	consult
+	consult-todo
+	copilot
+	deft
+	doom-modeline
+	doom-themes
+	dslide
+	eat
+	eglot
+	elfeed
+	elfeed-protocol
+	elfeed-score
+	emojify
+	flycheck-languagetool
+	forge
+	git-gutter
+	git-link
+	gptel
+	helm-org-ql
+	helm-org-rifle
+	hl-todo
+	jq-mode
+	kubed
+	lsp-metals
+	magit
+	marginalia
+	markdown-mode
+	nov
+	orderless
+	org
+	org-present
+	org-roam-ui
+	org-super-agenda
+	org-super-links
+	pocket-reader
+	python-pytest
+	pyvenv
+	ruff-format
+	rustic
+	typescript-mode
+	verb
+	vertico
+	visual-fill-column
+	with-venv
+	yaml-mode
+	yaml-pro
+	)
+      )
 
 
 (custom-set-variables
@@ -436,16 +616,12 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ignored-local-variable-values '((pyvenv-workon . vault-api-gateway-k6r7IIeG)))
- '(org-agenda-files
-   '("/home/ccabessa/org/perso/ion.org" "/home/ccabessa/org/perso/jdr.org" "/home/ccabessa/org/perso/perso.org" "/home/ccabessa/org/perso/ref.org" "/home/ccabessa/org/work/clock.org" "/home/ccabessa/org/work/interviews.org" "/home/ccabessa/org/work/ledger.org" "/home/ccabessa/org/inbox.org"))
- '(org-format-latex-options
-   '(:foreground default :background default :scale 1.5 :html-foreground "Black" :html-background "Transparent" :html-scale 1.0 :matchers
-		 ("begin" "$1" "$" "$$" "\\(" "\\[")))
- '(package-selected-packages
-   '(vertico marginalia orderless bufler doom-modeline doom-themes all-the-icons all-the-icons-dired eglot pyvenv blacken rustic consult company company-quickhelp hl-todo magit forge git-link org org-roam-ui org-super-links helm-org-rifle deft org-super-agenda markdown-mode grip-mode visual-fill-column ruff-format restclient python-pytest projectile org-present yaml-mode restclient-jq jq-mode lsp-metals typescript-mode copilot with-venv pocket-reader ob-restclient))
- '(safe-local-variable-values '((pyvenv-workon . ledger-vault-api-AAYNituf)))
- '(typescript-indent-level 2))
+ '(compilation-always-kill t)
+ '(flycheck-keymap-prefix "")
+ '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
+ '(safe-local-variable-values
+   '((pyvenv-workon . vault-api-gateway-k6r7IIeG) (pyvenv-workon . vault-tradelink-QDkmTEDo-3.13)
+     (pyvenv-workon . ledger-vault-api-AAYNituf))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
