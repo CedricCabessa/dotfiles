@@ -51,9 +51,6 @@ bashrcprompt()
         venv="(venv) "
     fi
 
-    # https://unix.stackexchange.com/a/18443
-    history -n; history -w; history -c; history -r;
-
     if [[ $error != 0 ]]; then
 	if [[ $UID != 0 ]]; then
 	    PS1="${error} ${venv}\[\e[37;41m\]\h \[\e[01;37m\]$(prompt_pwd) $ \[\e[0m\]"
@@ -290,19 +287,16 @@ check_perso() {
     fi
 }
 
-check_perso /lib/systemd/system/sentinelone.service
-check_perso /lib/systemd/system/fusioninventory-agent.service
+eval "$(atuin init bash)"
 
-export MCFLY_FUZZY=2
-export MCFLY_RESULTS=30
-export MCFLY_DISABLE_RUN_COMMAND=1
-eval "$(mcfly init bash)"
-
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+[[ -f ~/.bash-preexec.sh ]] && source ~/.bash-preexec.sh
 
 # pnpm
 export PNPM_HOME="/home/ccabessa/.local/share/pnpm"
-export PATH="$PNPM_HOME:$PATH"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
 # pnpm end
 
 vproxy() {
@@ -329,3 +323,6 @@ fi
 if [ -f ~/.private ]; then
     . ~/.private
 fi
+. "$HOME/.cargo/env"
+
+export JQ_COLORS="1;35:0;39:0;39:0;39:0;32:1;39:1;39:1;36"

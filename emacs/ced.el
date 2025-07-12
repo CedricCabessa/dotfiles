@@ -29,8 +29,11 @@
 
 (defvar ced/addr-list '
   (("external tbtc"    . "tb1q4280xax2lt0u5a5s9hd4easuvzalm8v9ege9ge")
-   ("ropsten"          . "0x687422eEA2cB73B5d3e242bA5456b782919AFc85")
+   ("sepolia"          . "0xA1C3389b3ab5525C16F90bFa6CAe7A7671d7Fc95")
    ("xrp saltqa"       . "r9AWXPzopvkL9Mq63cjzLvqVpr3KipaPLm")
+   ("stellar"          . "GCH572NV4VU5QRXVEBN26MJOAQAYSA2H3TCWIEP7NVXN2ARIDJECQM47") ; saltqa
+   ("tezos"            . "tz2Q7SZFTVz2K5mtDzB7HPrsJ6boEyBiUAo2") ; publicapi
+   ("tron"             . "TPJZnKbZJaaVhtEzhDtP2PcytfAa743pFr") ; publicapi
    ))
 
 (defun ced/addr ()
@@ -140,3 +143,59 @@
     (fset 'elfeed-score-sort (symbol-function 'ced/elfeed-score-sort-random))
     )
   )
+
+
+
+(defvar ced/clock-timer)
+(defun ced/clock-start ()
+  (interactive)
+  (set 'clock-timer (run-with-timer 1 1
+    (lambda ()
+      (message (format-time-string "%Y-%m-%d %H:%M:%S"))
+      )
+    ))
+  )
+
+(defun ced/clock-stop ()
+  (interactive)
+  (cancel-timer clock-timer)
+  (setq clock-timer nil)
+  )
+
+
+;; https://endlessparentheses.com/emacs-narrow-or-widen-dwim.html
+(defun narrow-or-widen-dwim (p)
+  "Widen if buffer is narrowed, narrow-dwim otherwise.
+Dwim means: region, org-src-block, org-subtree, or
+defun, whichever applies first. Narrowing to
+org-src-block actually calls `org-edit-src-code'.
+
+With prefix P, don't widen, just narrow even if buffer
+is already narrowed."
+  (interactive "P")
+  (declare (interactive-only))
+  (cond ((and (buffer-narrowed-p) (not p)) (widen))
+        ((region-active-p)
+         (narrow-to-region (region-beginning)
+                           (region-end)))
+        ((derived-mode-p 'org-mode)
+         ;; `org-edit-src-code' is not a real narrowing
+         ;; command. Remove this first conditional if
+         ;; you don't want it.
+         (cond ((ignore-errors (org-edit-src-code) t)
+                (delete-other-windows))
+               ((ignore-errors (org-narrow-to-block) t))
+               (t (org-narrow-to-subtree))))
+        ((derived-mode-p 'latex-mode)
+         (LaTeX-narrow-to-environment))
+        (t (narrow-to-defun))))
+
+
+(defun ced/add-property-after-refile ()
+  (let* ((current-file (file-name-nondirectory (buffer-file-name (current-buffer)))))
+    (when (and (org-at-heading-p)
+	       (string-equal current-file "pocket.org"))
+      (org-entry-put (point) "ARCHIVED" (format-time-string "%Y-%m-%d")))
+    )
+)
+(add-hook 'org-after-refile-insert-hook 'ced/add-property-after-refile)

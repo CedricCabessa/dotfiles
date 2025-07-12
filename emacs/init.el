@@ -57,6 +57,11 @@
 
 (setq recentf-max-saved-items 1000)
 
+(setq global-mark-ring-max 10)
+(setq-default set-mark-command-repeat-pop t)
+
+(setq indent-tabs-mode nil)
+
 
 (defun match-paren (arg)
   "Go to the matching paren if on a paren; otherwise insert %."
@@ -70,6 +75,8 @@
 (windmove-default-keybindings)
 
 (global-auto-revert-mode 1)
+
+(bind-key "C-x n n" 'narrow-or-widen-dwim)
 
 ; vertical completion
 (use-package vertico
@@ -153,8 +160,6 @@
   (setq pyvenv-menu t)
   ;; change venv when changing buffer
   (setq pyvenv-tracking-mode t)
-  ;; don't show venv in modeline
-  (setq pyvenv-mode-line-indicator nil)
   ;; Restart the python process when switching environments
   (add-hook 'pyvenv-post-activate-hooks (lambda ()
 					  (pyvenv-restart-python)))
@@ -207,7 +212,9 @@
 
 (use-package consult
   :ensure t
-  :bind (("M-s r" . consult-ripgrep))
+  :bind (("M-s r" . consult-ripgrep)
+	 ("M-g k" . consult-global-mark)
+	 )
 )
 
 ;; Provides completion, with the proper backend
@@ -285,8 +292,9 @@
   :ensure t
   :init
   (setq org-duration-format (quote ((special . h:mm))))
-  (setq org-log-into-drawer t)
-  (setq org-todo-keywords (quote ((sequence "TODO(!)" "DONE(!)"))))
+  (setq org-log-into-drawer "LOGBOOK")
+  (org-log-into-drawer)
+  (setq org-todo-keywords (quote ((sequence "TODO(t!)" "NEXT(n!)" "INPROGRESS(p!)" "DONE(d!)"))))
   (setq org-startup-folded t)
   (setq org-hide-emphasis-markers t)
   (dolist (face '((org-level-1 . 1.5)
@@ -317,8 +325,12 @@
      ("d" "decision" entry
       (file "~/org/decision.org")
       "* %U %? %^G" :prepend t)
+     ("b" "Bookmark" entry (file+headline "~/org/pocket.org" "Bookmarks")
+      "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+     ("j" "Journal Entry" entry (file+datetree "~/org/perso/journal.org")
+      "* %?" :tree-type day)
      )
-    )
+   )
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
 
   (setq org-agenda-files (ced/org-find-files "~/org"))
@@ -334,6 +346,8 @@
     ("cU" "Untagged" ((tags-todo "-{.*}")))
     ("cw" "Work" agenda "" ((org-agenda-files (ced/org-find-files "~/org/work"))))
     ("cp" "Perso" agenda "" ((org-agenda-files (ced/org-find-files "~/org/perso"))))
+    ("cr" "What's next" todo "NEXT|INPROGRESS")
+    ("cW" "Work unscheduled" tags-todo  "work+TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\"")
     )
   )
   (org-babel-do-load-languages
@@ -372,6 +386,7 @@
       )
     )
   (setq appt-message-warning-time 0)
+  (setq appt-display-duration 86400)
   )
 
 (defun my-org()
@@ -450,18 +465,6 @@
   :bind (("C-x :" . emojify-insert-emoji))
   )
 
-;; incompatible org version??
-
-;; (use-package org-excalidraw
-;;   :straight (:type git :host github :repo "wdavew/org-excalidraw")
-;;   :config
-;;   (setq org-excalidraw-directory "~/org/excalidraw")
-;;   (org-excalidraw-initialize)
-;; )
-(setq org-excalidraw-directory "~/org/excalidraw")
-(load-file "~/workdir/elisp/org-excalidraw.el")
-(org-excalidraw-initialize)
-
 (use-package yaml-pro
   :ensure t
   :init
@@ -503,6 +506,8 @@
 (use-package elfeed
   :ensure t
   :bind (:map elfeed-show-mode-map ("f" . ced/elfeed-browse-url-at-point-firefox))
+  :init
+  (run-with-timer 5 3600 'elfeed-update)
   :config
   (setq elfeed-search-title-max-width 100)
   (add-hook 'elfeed-show-mode-hook (lambda (): (setq show-trailing-whitespace nil)))
@@ -532,18 +537,11 @@
   (advice-add 'verb--response-header-line-string :filter-return #'ced/verb-header-addtime)
   :config
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map)
-  (add-hook                       ; https://github.com/federicotdn/verb/issues/82
-   'org-ctrl-c-ctrl-c-hook
-   (lambda ()
-     (when (and (member "verb" (org-get-tags))
-                verb-mode)
-       (call-interactively #'verb-send-request-on-point-other-window-stay))))
   )
 
 (use-package pocket-reader
   :ensure t
   )
-
 
 (use-package eat
   :ensure t
@@ -617,14 +615,20 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(compilation-always-kill t)
+ '(describe-char-unidata-list
+   '(name old-name general-category canonical-combining-class decomposition uppercase))
  '(flycheck-keymap-prefix "")
- '(package-vc-selected-packages '((aider :url "https://github.com/tninja/aider.el")))
+ '(js-indent-level 2)
  '(safe-local-variable-values
-   '((pyvenv-workon . vault-api-gateway-k6r7IIeG) (pyvenv-workon . vault-tradelink-QDkmTEDo-3.13)
-     (pyvenv-workon . ledger-vault-api-AAYNituf))))
+   '((blacken-mode . t) (blacken-mode) (ruff-format-on-save-mode) (ruff-format-on-save-mode nil)
+     (ruff-format-on-save-mode 0) (ruff-format-on-save 0)
+     (pyvenv-workon . python-lama-oktAgv3Z-3.13) (pyvenv-workon . vault-api-gateway-k6r7IIeG)
+     (pyvenv-workon . vault-tradelink-QDkmTEDo-3.13) (pyvenv-workon . ledger-vault-api-AAYNituf)))
+ '(typescript-indent-level 2))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'list-timers 'disabled nil)
