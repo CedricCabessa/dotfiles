@@ -313,27 +313,24 @@
   ;; first day of week is monday
   (setq calendar-week-start-day 1)
   (setq org-capture-templates
-   '(("i" "inbox" entry
-      (file "~/org/inbox.org")
-      "* %U %k%?" :prepend t)
-     ("f" "future" entry
-      (file "~/org/inbox.org")
-      "* TODO %?\nSCHEDULED %^t\n" :prepend t)
-     ("k" "knowledge" entry
-      (file "~/org/knowledge.org")
-      "* %?"  :prepend t)
-     ("d" "decision" entry
-      (file "~/org/decision.org")
-      "* %U %? %^G" :prepend t)
-     ("b" "Bookmark" entry (file+headline "~/org/pocket.org" "Bookmarks")
-      "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
-     ("j" "Journal Entry" entry (file+datetree "~/org/perso/journal.org")
-      "* %?" :tree-type day)
+    (list
+      (list "i" "inbox" 'entry
+        (list 'file (ced/org-file "inbox.org")) "* %U %k%?" :prepend t)
+      (list "f" "future" 'entry
+       (list 'file (ced/org-file "inbox.org")) "* TODO %?\nSCHEDULED %^t\n" :prepend t)
+      (list "k" "knowledge" 'entry
+       (list 'file (ced/org-file "knowledge.org")) "* %?"  :prepend t)
+      (list "d" "decision" 'entry
+       (list 'file (ced/org-file "decision.org")) "* %U %? %^G" :prepend t)
+      (list "b" "Bookmark" 'entry
+       (list 'file+headline (ced/org-file "pocket.org") "Bookmarks") "* %? %^g\n:PROPERTIES:\n:CREATED: %U\n:END:\n\n" :empty-lines 1)
+      (list "j" "Journal Entry" 'entry
+       (list 'file+olp+datetree (ced/org-file "perso/journal.org")) "* %?" :tree-type 'day)
      )
    )
   (setq org-refile-targets '((org-agenda-files :maxlevel . 2)))
 
-  (setq org-agenda-files (ced/org-find-files "~/org"))
+  (setq org-agenda-files (ced/org-find-files ced/org-root))
   (setq org-agenda-custom-commands
   '(("c" . "My Custom Agendas")
     ("cu" "Unscheduled TODO"
@@ -344,8 +341,8 @@
      nil
      nil)
     ("cU" "Untagged" ((tags-todo "-{.*}")))
-    ("cw" "Work" agenda "" ((org-agenda-files (ced/org-find-files "~/org/work"))))
-    ("cp" "Perso" agenda "" ((org-agenda-files (ced/org-find-files "~/org/perso"))))
+    ("cw" "Work" agenda "" ((org-agenda-files (ced/org-find-files (ced/org-file "work")))))
+    ("cp" "Perso" agenda "" ((org-agenda-files (ced/org-find-files (ced/org-file "perso")))))
     ("cr" "What's next" todo "NEXT|INPROGRESS")
     ("cW" "Work unscheduled" tags-todo  "work+TODO={TODO}+DEADLINE=\"\"+SCHEDULED=\"\"")
     )

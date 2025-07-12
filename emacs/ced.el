@@ -81,6 +81,11 @@
    )
   )
 
+(defvar ced/org-root "~/org/")
+
+(defun ced/org-file (name)
+  (file-name-concat ced/org-root name)
+  )
 
 (setq math-additional-units
       '((btc nil "bitcoin")
